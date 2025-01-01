@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogYourWorkouts</title>
+    <link rel="stylesheet" href="navbarstyle.css">
+    <style>
+
+        
+        * {box-sizing:border-box}
+
+        /* Slideshow container */
+        .slideshow-container {
+            max-width: 500px;
+            position: relative;
+            margin: auto;
+        }
+
+        /* Hide the images by default */
+        .mySlides {
+            display: none;
+        }
+
+        /* Next & previous buttons */
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            margin-top: -22px;
+            padding: 16px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 0.6s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+        }
+
+        /* Position the "next button" to the right */
+        .next {
+            right: 0;
+            border-radius: 3px 0 0 3px;
+        }
+
+        /* On hover, add a black background color with a little bit see-through */
+        .prev:hover, .next:hover {
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        /* Caption text */
+        .text {
+            color: #f2f2f2;
+            font-size: 15px;
+            padding: 8px 12px;
+            position: absolute;
+            bottom: 8px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Number text (1/3 etc) */
+        .numbertext {
+            color: #f2f2f2;
+            font-size: 12px;
+            padding: 8px 12px;
+            position: absolute;
+            top: 0;
+        }
+
+        /* The dots/bullets/indicators */
+        .dot {
+            cursor: pointer;
+            height: 15px;
+            width: 15px;
+            margin: 0 2px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.6s ease;
+        }
+
+        .active, .dot:hover {
+            background-color: #717171;
+        }
+
+        /* Fading animation */
+        .fade {
+            animation-name: fade;
+            animation-duration: 1.5s;
+        }
+
+        @keyframes fade {
+            from {opacity: .4}
+            to {opacity: 1}
+        }    
+        #confirmationPopup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        #day-button, #month-button  {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        /* Close button styles */
+        #dayclose, #monthclose {
+            background-color: #f44336;
+        }   
+        #active {
+            background-color: green;
+        }
+        .day-button {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .month-button {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        #delete-button {
+            background-color: red;
+            color: white;
+            padding: 15px 20px;
+            font-size: 15px;
+            border: none;
+            cursor: pointer;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        #january-popup {
+            visibility: hidden;
+            opacity: 0;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: visibility 0s, opacity 0.5s linear;
+            width: 80%;
+        }
+        #february-popup {
+            visibility: hidden;
+            opacity: 0;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: visibility 0s, opacity 0.5s linear;
+            width: 80%;
+        }
+        #march-popup {
+            visibility: hidden;
+            opacity: 0;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: visibility 0s, opacity 0.5s linear;
+            width: 80%;
+        }
+        #april-popup {
+            visibility: hidden;
+            opacity: 0;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: visibility 0s, opacity 0.5s linear;
+            width: 80%;
+        }
+        #may-popup {
+            visibility: hidden;
+            opacity: 0;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: visibility 0s, opacity 0.5s linear;
+            width: 80%;
+        }
+        #june-popup {
+            visibility: hidden;
+            opacity: 0;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: visibility 0s, opacity 0.5s linear;
+            width: 80%;
+        }
+        #july-popup {
+            visibility: hidden;
+            opacity: 0;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: visibility 0s, opacity 0.5s linear;
+            width: 80%;
+        }
+        #august-popup {
+            visibility: hidden;
+            opacity: 0;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: visibility 0s, opacity 0.5s linear;
+            width: 80%;
+        }
+        #september-popup {
+            visibility: hidden;
+            opacity: 0;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: visibility 0s, opacity 0.5s linear;
+            width: 80%;
+        }
+        #october-popup {
+            visibility: hidden;
+            opacity: 0;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: visibility 0s, opacity 0.5s linear;
+            width: 80%;
+        }
+        #november-popup {
+            visibility: hidden;
+            opacity: 0;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: visibility 0s, opacity 0.5s linear;
+            width: 80%;
+        }
+        #december-popup {
+            visibility: hidden;
+            opacity: 0;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: visibility 0s, opacity 0.5s linear;
+            width: 80%;
+        }
+
+        #popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .box {
+            background-color: black;
+            display: flex;
+        }
+        p {
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+        }
+        .box a {
+            display: inline-block;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 3px;
+        }
+        .modal {
+            align-items: center;
+            display: flex;
+            justify-content: center; 
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(254, 126, 126, 0.7);
+            transition: all 0.4s;
+            visibility: hidden;
+            opacity: 0;
+        }
+        .content {
+            position: absolute;
+            background: white;
+            width: 400px;
+            padding: 1em 2em;
+            border-radius: 4px;
+        } 
+        .modal:target {
+            visibility: visible;
+            opacity: 1;
+        }
+        .box-close {
+            position: absolute;
+            top: 0;
+            right: 15px;
+            color: #fe0606;
+            text-decoration: none;
+            font-size: 30px;
+        }
+    </style>
+    <script> 
+        function hideJanuaryButtonsPopup() {
+            document.getElementById("january-popup").style.visibility = "hidden";
+            document.getElementById("january-popup").style.opacity = 0;
+        }
+        function hideFebruaryButtonsPopup() {
+            document.getElementById("february-popup").style.visibility = "hidden";
+            document.getElementById("february-popup").style.opacity = 0;
+        }
+        function hideMarchButtonsPopup() {
+            document.getElementById("march-popup").style.visibility = "hidden";
+            document.getElementById("march-popup").style.opacity = 0;
+        }
+        function hideAprilButtonsPopup() {
+            document.getElementById("april-popup").style.visibility = "hidden";
+            document.getElementById("april-popup").style.opacity = 0;
+        }
+        function hideMayButtonsPopup() {
+            document.getElementById("may-popup").style.visibility = "hidden";
+            document.getElementById("may-popup").style.opacity = 0;
+        }
+        function hideJuneButtonsPopup() {
+            document.getElementById("june-popup").style.visibility = "hidden";
+            document.getElementById("june-popup").style.opacity = 0;
+        }
+        function hideJulyButtonsPopup() {
+            document.getElementById("july-popup").style.visibility = "hidden";
+            document.getElementById("july-popup").style.opacity = 0;
+        }
+        function hideAugustButtonsPopup() {
+            document.getElementById("august-popup").style.visibility = "hidden";
+            document.getElementById("august-popup").style.opacity = 0;
+        }
+        function hideSeptemberButtonsPopup() {
+            document.getElementById("september-popup").style.visibility = "hidden";
+            document.getElementById("september-popup").style.opacity = 0;
+        }
+        function hideOctoberButtonsPopup() {
+            document.getElementById("october-popup").style.visibility = "hidden";
+            document.getElementById("october-popup").style.opacity = 0;
+        }
+        function hideNovemberButtonsPopup() {
+            document.getElementById("november-popup").style.visibility = "hidden";
+            document.getElementById("novmber-popup").style.opacity = 0;
+        }
+        function hideDecemberButtonsPopup() {
+            document.getElementById("december-popup").style.visibility = "hidden";
+            document.getElementById("december-popup").style.opacity = 0;
+        }
+
+        function hidePopup() {
+            document.getElementById("popup").style.display = "none";
+        }
+
+        function updateJanuaryButtonStyle() {
+            var allGreen = true;
+            // Check if all day buttons are green
+            document.querySelectorAll(".day-button").forEach(function (button) {
+                if (!button.classList.contains("green")) {
+                    allGreen = false;
+                }
+            });
+            // Update January button style based on allGreen
+            var januaryButton = document.getElementById("january-button");
+            if (allGreen) {
+                januaryButton.classList.add("green");
+            } else {
+                januaryButton.classList.remove("green");
+            }
+        }
+
+        function showJanuaryButtonsPopup() {
+        document.getElementById("january-popup").style.visibility = "visible";
+        document.getElementById("january-popup").style.opacity = 1;
+        document.getElementById("february-popup").style.visibility = "hidden";
+        document.getElementById("february-popup").style.opacity = 0;
+        document.getElementById("march-popup").style.visibility = "hidden";
+        document.getElementById("march-popup").style.opacity = 0;
+        document.getElementById("april-popup").style.visibility = "hidden";
+        document.getElementById("april-popup").style.opacity = 0;
+        document.getElementById("may-popup").style.visibility = "hidden";
+        document.getElementById("may-popup").style.opacity = 0;
+        document.getElementById("june-popup").style.visibility = "hidden";
+        document.getElementById("june-popup").style.opacity = 0;
+        document.getElementById("july-popup").style.visibility = "hidden";
+        document.getElementById("july-popup").style.opacity = 0;
+        document.getElementById("august-popup").style.visibility = "hidden";
+        document.getElementById("august-popup").style.opacity = 0;
+        document.getElementById("september-popup").style.visibility = "hidden";
+        document.getElementById("september-popup").style.opacity = 0;
+        document.getElementById("october-popup").style.visibility = "hidden";
+        document.getElementById("october-popup").style.opacity = 0;
+        document.getElementById("november-popup").style.visibility = "hidden";
+        document.getElementById("novmber-popup").style.opacity = 0;
+        document.getElementById("december-popup").style.visibility = "hidden";
+        document.getElementById("december-popup").style.opacity = 0;
+        document.getElementById("popup").style.display = "none";
+        }
+
+        function showJanDayPopup(day) {
+            document.getElementById("selected-day").innerText = "Selected Day: " + day;
+            // Show the popup when a day is clicked
+            document.getElementById("popup").style.display = "block";
+        }
+        
+        function showFebruaryButtonsPopup() {
+        document.getElementById("february-popup").style.visibility = "visible";
+        document.getElementById("february-popup").style.opacity = 1;
+        document.getElementById("january-popup").style.visibility = "hidden";
+        document.getElementById("january-popup").style.opacity = 0;
+        document.getElementById("march-popup").style.visibility = "hidden";
+        document.getElementById("march-popup").style.opacity = 0;
+        document.getElementById("april-popup").style.visibility = "hidden";
+        document.getElementById("april-popup").style.opacity = 0;
+        document.getElementById("may-popup").style.visibility = "hidden";
+        document.getElementById("may-popup").style.opacity = 0;
+        document.getElementById("june-popup").style.visibility = "hidden";
+        document.getElementById("june-popup").style.opacity = 0;
+        document.getElementById("july-popup").style.visibility = "hidden";
+        document.getElementById("july-popup").style.opacity = 0;
+        document.getElementById("august-popup").style.visibility = "hidden";
+        document.getElementById("august-popup").style.opacity = 0;
+        document.getElementById("september-popup").style.visibility = "hidden";
+        document.getElementById("september-popup").style.opacity = 0;
+        document.getElementById("october-popup").style.visibility = "hidden";
+        document.getElementById("october-popup").style.opacity = 0;
+        document.getElementById("november-popup").style.visibility = "hidden";
+        document.getElementById("novmber-popup").style.opacity = 0;
+        document.getElementById("december-popup").style.visibility = "hidden";
+        document.getElementById("december-popup").style.opacity = 0;
+        document.getElementById("popup").style.display = "none";
+        }
+
+        function showFebDayPopup(day) {
+            document.getElementById("selected-day").innerText = "Selected Day: " + day;
+            // Show the popup when a day is clicked
+            document.getElementById("popup").style.display = "block";
+        }
+        function showMarchButtonsPopup() {
+        document.getElementById("march-popup").style.visibility = "visible";
+        document.getElementById("march-popup").style.opacity = 1;
+        document.getElementById("february-popup").style.visibility = "hidden";
+        document.getElementById("february-popup").style.opacity = 0;
+        document.getElementById("january-popup").style.visibility = "hidden";
+        document.getElementById("january-popup").style.opacity = 0;
+        document.getElementById("april-popup").style.visibility = "hidden";
+        document.getElementById("april-popup").style.opacity = 0;
+        document.getElementById("may-popup").style.visibility = "hidden";
+        document.getElementById("may-popup").style.opacity = 0;
+        document.getElementById("june-popup").style.visibility = "hidden";
+        document.getElementById("june-popup").style.opacity = 0;
+        document.getElementById("july-popup").style.visibility = "hidden";
+        document.getElementById("july-popup").style.opacity = 0;
+        document.getElementById("august-popup").style.visibility = "hidden";
+        document.getElementById("august-popup").style.opacity = 0;
+        document.getElementById("september-popup").style.visibility = "hidden";
+        document.getElementById("september-popup").style.opacity = 0;
+        document.getElementById("october-popup").style.visibility = "hidden";
+        document.getElementById("october-popup").style.opacity = 0;
+        document.getElementById("november-popup").style.visibility = "hidden";
+        document.getElementById("novmber-popup").style.opacity = 0;
+        document.getElementById("december-popup").style.visibility = "hidden";
+        document.getElementById("december-popup").style.opacity = 0;
+        document.getElementById("popup").style.display = "none";
+        }
+
+        function showMarDayPopup(day) {
+            document.getElementById("selected-day").innerText = "Selected Day: " + day;
+            // Show the popup when a day is clicked
+            document.getElementById("popup").style.display = "block";
+        }
+        function showAprilButtonsPopup() {
+        document.getElementById("april-popup").style.visibility = "visible";
+        document.getElementById("april-popup").style.opacity = 1;
+        document.getElementById("january-popup").style.visibility = "hidden";
+        document.getElementById("january-popup").style.opacity = 0;
+        document.getElementById("march-popup").style.visibility = "hidden";
+        document.getElementById("march-popup").style.opacity = 0;
+        document.getElementById("february-popup").style.visibility = "hidden";
+        document.getElementById("february-popup").style.opacity = 0;
+        document.getElementById("may-popup").style.visibility = "hidden";
+        document.getElementById("may-popup").style.opacity = 0;
+        document.getElementById("june-popup").style.visibility = "hidden";
+        document.getElementById("june-popup").style.opacity = 0;
+        document.getElementById("july-popup").style.visibility = "hidden";
+        document.getElementById("july-popup").style.opacity = 0;
+        document.getElementById("august-popup").style.visibility = "hidden";
+        document.getElementById("august-popup").style.opacity = 0;
+        document.getElementById("september-popup").style.visibility = "hidden";
+        document.getElementById("september-popup").style.opacity = 0;
+        document.getElementById("october-popup").style.visibility = "hidden";
+        document.getElementById("october-popup").style.opacity = 0;
+        document.getElementById("november-popup").style.visibility = "hidden";
+        document.getElementById("novmber-popup").style.opacity = 0;
+        document.getElementById("december-popup").style.visibility = "hidden";
+        document.getElementById("december-popup").style.opacity = 0;
+        document.getElementById("popup").style.display = "none";
+        }
+
+        function showAprDayPopup(day) {
+            document.getElementById("selected-day").innerText = "Selected Day: " + day;
+            // Show the popup when a day is clicked
+            document.getElementById("popup").style.display = "block";
+        }
+        function showMayButtonsPopup() {
+        document.getElementById("april-popup").style.visibility = "hidden";
+        document.getElementById("april-popup").style.opacity = 0;
+        document.getElementById("january-popup").style.visibility = "hidden";
+        document.getElementById("january-popup").style.opacity = 0;
+        document.getElementById("march-popup").style.visibility = "hidden";
+        document.getElementById("march-popup").style.opacity = 0;
+        document.getElementById("february-popup").style.visibility = "hidden";
+        document.getElementById("february-popup").style.opacity = 0;
+        document.getElementById("may-popup").style.visibility = "visible";
+        document.getElementById("may-popup").style.opacity = 1;
+        document.getElementById("june-popup").style.visibility = "hidden";
+        document.getElementById("june-popup").style.opacity = 0;
+        document.getElementById("july-popup").style.visibility = "hidden";
+        document.getElementById("july-popup").style.opacity = 0;
+        document.getElementById("august-popup").style.visibility = "hidden";
+        document.getElementById("august-popup").style.opacity = 0;
+        document.getElementById("september-popup").style.visibility = "hidden";
+        document.getElementById("september-popup").style.opacity = 0;
+        document.getElementById("october-popup").style.visibility = "hidden";
+        document.getElementById("october-popup").style.opacity = 0;
+        document.getElementById("november-popup").style.visibility = "hidden";
+        document.getElementById("novmber-popup").style.opacity = 0;
+        document.getElementById("december-popup").style.visibility = "hidden";
+        document.getElementById("december-popup").style.opacity = 0;
+        document.getElementById("popup").style.display = "none";
+        }
+
+        function showMayDayPopup(day) {
+            document.getElementById("selected-day").innerText = "Selected Day: " + day;
+            // Show the popup when a day is clicked
+            document.getElementById("popup").style.display = "block";
+        }
+        function showJuneButtonsPopup() {
+        document.getElementById("april-popup").style.visibility = "hidden";
+        document.getElementById("april-popup").style.opacity = 0;
+        document.getElementById("january-popup").style.visibility = "hidden";
+        document.getElementById("january-popup").style.opacity = 0;
+        document.getElementById("march-popup").style.visibility = "hidden";
+        document.getElementById("march-popup").style.opacity = 0;
+        document.getElementById("february-popup").style.visibility = "hidden";
+        document.getElementById("february-popup").style.opacity = 0;
+        document.getElementById("may-popup").style.visibility = "hidden";
+        document.getElementById("may-popup").style.opacity = 0;
+        document.getElementById("june-popup").style.visibility = "visible";
+        document.getElementById("june-popup").style.opacity = 1;
+        document.getElementById("july-popup").style.visibility = "hidden";
+        document.getElementById("july-popup").style.opacity = 0;
+        document.getElementById("august-popup").style.visibility = "hidden";
+        document.getElementById("august-popup").style.opacity = 0;
+        document.getElementById("september-popup").style.visibility = "hidden";
+        document.getElementById("september-popup").style.opacity = 0;
+        document.getElementById("october-popup").style.visibility = "hidden";
+        document.getElementById("october-popup").style.opacity = 0;
+        document.getElementById("november-popup").style.visibility = "hidden";
+        document.getElementById("novmber-popup").style.opacity = 0;
+        document.getElementById("december-popup").style.visibility = "hidden";
+        document.getElementById("december-popup").style.opacity = 0;
+        document.getElementById("popup").style.display = "none";
+        }
+
+        function showJunDayPopup(day) {
+            document.getElementById("selected-day").innerText = "Selected Day: " + day;
+            // Show the popup when a day is clicked
+            document.getElementById("popup").style.display = "block";
+        }
+        function showJulyButtonsPopup() {
+        document.getElementById("april-popup").style.visibility = "hidden";
+        document.getElementById("april-popup").style.opacity = 0;
+        document.getElementById("january-popup").style.visibility = "hidden";
+        document.getElementById("january-popup").style.opacity = 0;
+        document.getElementById("march-popup").style.visibility = "hidden";
+        document.getElementById("march-popup").style.opacity = 0;
+        document.getElementById("february-popup").style.visibility = "hidden";
+        document.getElementById("february-popup").style.opacity = 0;
+        document.getElementById("may-popup").style.visibility = "hidden";
+        document.getElementById("may-popup").style.opacity = 0;
+        document.getElementById("june-popup").style.visibility = "hidden";
+        document.getElementById("june-popup").style.opacity = 0;
+        document.getElementById("july-popup").style.visibility = "visible";
+        document.getElementById("july-popup").style.opacity = 1;
+        document.getElementById("august-popup").style.visibility = "hidden";
+        document.getElementById("august-popup").style.opacity = 0;
+        document.getElementById("september-popup").style.visibility = "hidden";
+        document.getElementById("september-popup").style.opacity = 0;
+        document.getElementById("october-popup").style.visibility = "hidden";
+        document.getElementById("october-popup").style.opacity = 0;
+        document.getElementById("november-popup").style.visibility = "hidden";
+        document.getElementById("novmber-popup").style.opacity = 0;
+        document.getElementById("december-popup").style.visibility = "hidden";
+        document.getElementById("december-popup").style.opacity = 0;
+        document.getElementById("popup").style.display = "none";
+        }
+
+        function showJulDayPopup(day) {
+            document.getElementById("selected-day").innerText = "Selected Day: " + day;
+            // Show the popup when a day is clicked
+            document.getElementById("popup").style.display = "block";
+        }
+        function showAugustButtonsPopup() {
+        document.getElementById("april-popup").style.visibility = "hidden";
+        document.getElementById("april-popup").style.opacity = 0;
+        document.getElementById("january-popup").style.visibility = "hidden";
+        document.getElementById("january-popup").style.opacity = 0;
+        document.getElementById("march-popup").style.visibility = "hidden";
+        document.getElementById("march-popup").style.opacity = 0;
+        document.getElementById("february-popup").style.visibility = "hidden";
+        document.getElementById("february-popup").style.opacity = 0;
+        document.getElementById("may-popup").style.visibility = "hidden";
+        document.getElementById("may-popup").style.opacity = 0;
+        document.getElementById("june-popup").style.visibility = "hidden";
+        document.getElementById("june-popup").style.opacity = 0;
+        document.getElementById("july-popup").style.visibility = "hidden";
+        document.getElementById("july-popup").style.opacity = 0;
+        document.getElementById("august-popup").style.visibility = "visible";
+        document.getElementById("august-popup").style.opacity = 1;
+        document.getElementById("september-popup").style.visibility = "hidden";
+        document.getElementById("september-popup").style.opacity = 0;
+        document.getElementById("october-popup").style.visibility = "hidden";
+        document.getElementById("october-popup").style.opacity = 0;
+        document.getElementById("november-popup").style.visibility = "hidden";
+        document.getElementById("novmber-popup").style.opacity = 0;
+        document.getElementById("december-popup").style.visibility = "hidden";
+        document.getElementById("december-popup").style.opacity = 0;
+        document.getElementById("popup").style.display = "none";
+        }
+
+        function showAugDayPopup(day) {
+            document.getElementById("selected-day").innerText = "Selected Day: " + day;
+            // Show the popup when a day is clicked
+            document.getElementById("popup").style.display = "block";
+        }
+        function showSeptemberButtonsPopup() {
+        document.getElementById("april-popup").style.visibility = "hidden";
+        document.getElementById("april-popup").style.opacity = 0;
+        document.getElementById("january-popup").style.visibility = "hidden";
+        document.getElementById("january-popup").style.opacity = 0;
+        document.getElementById("march-popup").style.visibility = "hidden";
+        document.getElementById("march-popup").style.opacity = 0;
+        document.getElementById("february-popup").style.visibility = "hidden";
+        document.getElementById("february-popup").style.opacity = 0;
+        document.getElementById("may-popup").style.visibility = "hidden";
+        document.getElementById("may-popup").style.opacity = 0;
+        document.getElementById("june-popup").style.visibility = "hidden";
+        document.getElementById("june-popup").style.opacity = 0;
+        document.getElementById("july-popup").style.visibility = "hidden";
+        document.getElementById("july-popup").style.opacity = 0;
+        document.getElementById("august-popup").style.visibility = "hidden";
+        document.getElementById("august-popup").style.opacity = 0;
+        document.getElementById("september-popup").style.visibility = "visible";
+        document.getElementById("september-popup").style.opacity = 1;
+        document.getElementById("october-popup").style.visibility = "hidden";
+        document.getElementById("october-popup").style.opacity = 0;
+        document.getElementById("november-popup").style.visibility = "hidden";
+        document.getElementById("novmber-popup").style.opacity = 0;
+        document.getElementById("december-popup").style.visibility = "hidden";
+        document.getElementById("december-popup").style.opacity = 0;
+        document.getElementById("popup").style.display = "none";
+        }
+
+        function showSepDayPopup(day) {
+            document.getElementById("selected-day").innerText = "Selected Day: " + day;
+            // Show the popup when a day is clicked
+            document.getElementById("popup").style.display = "block";
+        }
+        function showOctoberButtonsPopup() {
+        document.getElementById("april-popup").style.visibility = "hidden";
+        document.getElementById("april-popup").style.opacity = 0;
+        document.getElementById("january-popup").style.visibility = "hidden";
+        document.getElementById("january-popup").style.opacity = 0;
+        document.getElementById("march-popup").style.visibility = "hidden";
+        document.getElementById("march-popup").style.opacity = 0;
+        document.getElementById("february-popup").style.visibility = "hidden";
+        document.getElementById("february-popup").style.opacity = 0;
+        document.getElementById("may-popup").style.visibility = "hidden";
+        document.getElementById("may-popup").style.opacity = 0;
+        document.getElementById("june-popup").style.visibility = "hidden";
+        document.getElementById("june-popup").style.opacity = 0;
+        document.getElementById("july-popup").style.visibility = "hidden";
+        document.getElementById("july-popup").style.opacity = 0;
+        document.getElementById("august-popup").style.visibility = "hidden";
+        document.getElementById("august-popup").style.opacity = 0;
+        document.getElementById("september-popup").style.visibility = "hidden";
+        document.getElementById("september-popup").style.opacity = 0;
+        document.getElementById("october-popup").style.visibility = "visible";
+        document.getElementById("october-popup").style.opacity = 1;
+        document.getElementById("november-popup").style.visibility = "hidden";
+        document.getElementById("novmber-popup").style.opacity = 0;
+        document.getElementById("december-popup").style.visibility = "hidden";
+        document.getElementById("december-popup").style.opacity = 0;
+        document.getElementById("popup").style.display = "none";
+        }
+
+        function showOctDayPopup(day) {
+            document.getElementById("selected-day").innerText = "Selected Day: " + day;
+            // Show the popup when a day is clicked
+            document.getElementById("popup").style.display = "block";
+        }
+        function showNovemberButtonsPopup() {
+        document.getElementById("april-popup").style.visibility = "hidden";
+        document.getElementById("april-popup").style.opacity = 0;
+        document.getElementById("january-popup").style.visibility = "hidden";
+        document.getElementById("january-popup").style.opacity = 0;
+        document.getElementById("march-popup").style.visibility = "hidden";
+        document.getElementById("march-popup").style.opacity = 0;
+        document.getElementById("february-popup").style.visibility = "hidden";
+        document.getElementById("february-popup").style.opacity = 0;
+        document.getElementById("may-popup").style.visibility = "hidden";
+        document.getElementById("may-popup").style.opacity = 0;
+        document.getElementById("june-popup").style.visibility = "hidden";
+        document.getElementById("june-popup").style.opacity = 0;
+        document.getElementById("july-popup").style.visibility = "hidden";
+        document.getElementById("july-popup").style.opacity = 0;
+        document.getElementById("august-popup").style.visibility = "hidden";
+        document.getElementById("august-popup").style.opacity = 0;
+        document.getElementById("september-popup").style.visibility = "hidden";
+        document.getElementById("september-popup").style.opacity = 0;
+        document.getElementById("october-popup").style.visibility = "hidden";
+        document.getElementById("october-popup").style.opacity = 0;
+        document.getElementById("november-popup").style.visibility = "visible";
+        document.getElementById("november-popup").style.opacity = 1;
+        document.getElementById("december-popup").style.visibility = "hidden";
+        document.getElementById("december-popup").style.opacity = 0;
+        document.getElementById("popup").style.display = "none";
+        }
+
+        function showNovDayPopup(day) {
+            document.getElementById("selected-day").innerText = "Selected Day: " + day;
+            // Show the popup when a day is clicked
+            document.getElementById("popup").style.display = "block";
+        }
+        function showDecemberButtonsPopup() {
+        document.getElementById("april-popup").style.visibility = "hidden";
+        document.getElementById("april-popup").style.opacity = 0;
+        document.getElementById("january-popup").style.visibility = "hidden";
+        document.getElementById("january-popup").style.opacity = 0;
+        document.getElementById("march-popup").style.visibility = "hidden";
+        document.getElementById("march-popup").style.opacity = 0;
+        document.getElementById("february-popup").style.visibility = "hidden";
+        document.getElementById("february-popup").style.opacity = 0;
+        document.getElementById("may-popup").style.visibility = "hidden";
+        document.getElementById("may-popup").style.opacity = 0;
+        document.getElementById("june-popup").style.visibility = "hidden";
+        document.getElementById("june-popup").style.opacity = 0;
+        document.getElementById("july-popup").style.visibility = "hidden";
+        document.getElementById("july-popup").style.opacity = 0;
+        document.getElementById("august-popup").style.visibility = "hidden";
+        document.getElementById("august-popup").style.opacity = 0;
+        document.getElementById("september-popup").style.visibility = "hidden";
+        document.getElementById("september-popup").style.opacity = 0;
+        document.getElementById("october-popup").style.visibility = "hidden";
+        document.getElementById("october-popup").style.opacity = 0;
+        document.getElementById("november-popup").style.visibility = "hidden";
+        document.getElementById("november-popup").style.opacity = 0;
+        document.getElementById("december-popup").style.visibility = "visible";
+        document.getElementById("december-popup").style.opacity = 1;
+        document.getElementById("popup").style.display = "none";
+        }
+
+        function showDecDayPopup(day) {
+            document.getElementById("selected-day").innerText = "Selected Day: " + day;
+            // Show the popup when a day is clicked
+            document.getElementById("popup").style.display = "block";
+        }
+    </script>
+</head>
+<body>
+    <div class="navbar">
+        <a id="active" href="index.html"><i class="fa fa-fw fa-home"></i> Home</a>
+        <a href="summary.html">Summary</a>
+        <a href="graph.html">Graph</a>
+    </div>
+
+    <h1>Scheduling per month</h1>
+
+    <div class="slideshow-container">
+
+        <!-- Full-width images with number and caption text -->
+        <div class="mySlides fade">
+          <div class="numbertext">1 / 12</div>
+          <img src="Januaryedited.png" id="january-image" style="width: 100%;" onclick="showJanuaryButtonsPopup()">
+        </div>
+      
+        <div class="mySlides fade">
+          <div class="numbertext">2 / 12</div>
+          <img src="Februaryedited.png" style="width: 100%;" onclick="showFebruaryButtonsPopup()">
+        </div>
+      
+        <div class="mySlides fade">
+          <div class="numbertext">3 / 12</div>
+          <img src="Marchedited.png" style="width: 100%;" onclick="showMarchButtonsPopup()">
+        </div>
+
+        <div class="mySlides fade">
+            <div class="numbertext">4 / 12</div>
+            <img src="Apriledited.png" style="width: 100%;" onclick="showAprilButtonsPopup()">
+        </div>
+
+        <div class="mySlides fade">
+            <div class="numbertext">5 / 12</div>
+            <img src="Mayedited.png" style="width: 100%;" onclick="showMayButtonsPopup()">
+        </div>
+
+        <div class="mySlides fade">
+            <div class="numbertext">6 / 12</div>
+            <img src="Juneedited.png" style="width: 100%;" onclick="showJuneButtonsPopup()">
+        </div>
+
+        <div class="mySlides fade">
+            <div class="numbertext">7 / 12</div>
+            <img src="Julyedited.png" style="width: 100%;" onclick="showJulyButtonsPopup()">
+        </div>
+
+        <div class="mySlides fade">
+            <div class="numbertext">8 / 12</div>
+            <img src="Augustedited.png" style="width: 100%;" onclick="showAugustButtonsPopup()">
+        </div>
+
+        <div class="mySlides fade">
+            <div class="numbertext">9 / 12</div>
+            <img src="Septemberedited.png" style="width: 100%;" onclick="showSeptemberButtonsPopup()">
+        </div>
+
+        <div class="mySlides fade">
+            <div class="numbertext">10 / 12</div>
+            <img src="Octoberedited.png" style="width: 100%;" onclick="showOctoberButtonsPopup()">
+        </div>
+
+        <div class="mySlides fade">
+            <div class="numbertext">11 / 12</div>
+            <img src="Novemberedited.png" style="width: 100%;" onclick="showNovemberButtonsPopup()">
+        </div>
+
+        <div class="mySlides fade">
+            <div class="numbertext">12 / 12</div>
+            <img src="Decemberedited.png" style="width: 100%;" onclick="showDecemberButtonsPopup()">
+        </div>
+      
+        <!-- Next and previous buttons -->
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+      </div>
+      <br>
+      
+      <!-- The dots/circles -->
+      <div style="text-align:center">
+        <span class="dot" onclick="currentSlide(1)"></span>
+        <span class="dot" onclick="currentSlide(2)"></span>
+        <span class="dot" onclick="currentSlide(3)"></span>
+        <span class="dot" onclick="currentSlide(4)"></span>
+        <span class="dot" onclick="currentSlide(5)"></span>
+        <span class="dot" onclick="currentSlide(6)"></span>
+        <span class="dot" onclick="currentSlide(7)"></span>
+        <span class="dot" onclick="currentSlide(8)"></span>
+        <span class="dot" onclick="currentSlide(9)"></span>
+        <span class="dot" onclick="currentSlide(10)"></span>
+        <span class="dot" onclick="currentSlide(11)"></span>
+        <span class="dot" onclick="currentSlide(12)"></span>
+
+      </div>
+
+        <div id="january-popup">
+            <h2>Select a Day below to enter values</h2>
+            <button id="Jan1" class="day-button" onclick="showJanDayPopup('Jan1')">01</button>
+            <button id="Jan2" class="day-button" onclick="showJanDayPopup('Jan2')">02</button>
+            <button id="Jan3" class="day-button" onclick="showJanDayPopup('Jan3')">03</button>
+            <button id="Jan4" class="day-button" onclick="showJanDayPopup('Jan4')">04</button>
+            <button id="Jan5" class="day-button" onclick="showJanDayPopup('Jan5')">05</button>
+            <button id="Jan6" class="day-button" onclick="showJanDayPopup('Jan6')">06</button>
+            <button id="Jan7" class="day-button" onclick="showJanDayPopup('Jan7')">07</button>
+            <button id="Jan8" class="day-button" onclick="showJanDayPopup('Jan8')">08</button>
+            <button id="Jan9" class="day-button" onclick="showJanDayPopup('Jan9')">09</button>
+            <button id="Jan10" class="day-button" onclick="showJanDayPopup('Jan10')">10</button>
+            <button id="Jan11" class="day-button" onclick="showJanDayPopup('Jan11')">11</button>
+            <button id="Jan12" class="day-button" onclick="showJanDayPopup('Jan12')">12</button>
+            <button id="Jan13" class="day-button" onclick="showJanDayPopup('Jan13')">13</button>
+            <button id="Jan14" class="day-button" onclick="showJanDayPopup('Jan14')">14</button>
+            <button id="Jan15" class="day-button" onclick="showJanDayPopup('Jan15')">15</button>
+            <button id="Jan16" class="day-button" onclick="showJanDayPopup('Jan16')">16</button>
+            <button id="Jan17" class="day-button" onclick="showJanDayPopup('Jan17')">17</button>
+            <button id="Jan18" class="day-button" onclick="showJanDayPopup('Jan18')">18</button>
+            <button id="Jan19" class="day-button" onclick="showJanDayPopup('Jan19')">19</button>
+            <button id="Jan20" class="day-button" onclick="showJanDayPopup('Jan20')">20</button>
+            <button id="Jan21" class="day-button" onclick="showJanDayPopup('Jan21')">21</button>
+            <button id="Jan22" class="day-button" onclick="showJanDayPopup('Jan22')">22</button>
+            <button id="Jan23" class="day-button" onclick="showJanDayPopup('Jan23')">23</button>
+            <button id="Jan24" class="day-button" onclick="showJanDayPopup('Jan24')">24</button>
+            <button id="Jan25" class="day-button" onclick="showJanDayPopup('Jan25')">25</button>
+            <button id="Jan26" class="day-button" onclick="showJanDayPopup('Jan26')">26</button>
+            <button id="Jan27" class="day-button" onclick="showJanDayPopup('Jan27')">27</button>
+            <button id="Jan28" class="day-button" onclick="showJanDayPopup('Jan28')">28</button>
+            <button id="Jan29" class="day-button" onclick="showJanDayPopup('Jan29')">29</button>
+            <button id="Jan30" class="day-button" onclick="showJanDayPopup('Jan30')">30</button>
+            <button id="Jan31" class="day-button" onclick="showJanDayPopup('Jan31')">31</button>
+            <button id="monthclose"onclick="hideJanuaryButtonsPopup()">Close</button>
+        </div>
+
+        <div id="february-popup">
+            <h2>Select a Day below to enter values</h2>
+            <button id="Feb1" class="day-button" onclick="showFebDayPopup('Feb1')">01</button>
+            <button id="Feb2" class="day-button" onclick="showFebDayPopup('Feb2')">02</button>
+            <button id="Feb3" class="day-button" onclick="showFebDayPopup('Feb3')">03</button>
+            <button id="Feb4" class="day-button" onclick="showFebDayPopup('Feb4')">04</button>
+            <button id="Feb5" class="day-button" onclick="showFebDayPopup('Feb5')">05</button>
+            <button id="Feb6" class="day-button" onclick="showFebDayPopup('Feb6')">06</button>
+            <button id="Feb7" class="day-button" onclick="showFebDayPopup('Feb7')">07</button>
+            <button id="Feb8" class="day-button" onclick="showFebDayPopup('Feb8')">08</button>
+            <button id="Feb9" class="day-button" onclick="showFebDayPopup('Feb9')">09</button>
+            <button id="Feb10" class="day-button" onclick="showFebDayPopup('Feb10')">10</button>
+            <button id="Feb11" class="day-button" onclick="showFebDayPopup('Feb11')">11</button>
+            <button id="Feb12" class="day-button" onclick="showFebDayPopup('Feb12')">12</button>
+            <button id="Feb13" class="day-button" onclick="showFebDayPopup('Feb13')">13</button>
+            <button id="Feb14" class="day-button" onclick="showFebDayPopup('Feb14')">14</button>
+            <button id="Feb15" class="day-button" onclick="showFebDayPopup('Feb15')">15</button>
+            <button id="Feb16" class="day-button" onclick="showFebDayPopup('Feb16')">16</button>
+            <button id="Feb17" class="day-button" onclick="showFebDayPopup('Feb17')">17</button>
+            <button id="Feb18" class="day-button" onclick="showFebDayPopup('Feb18')">18</button>
+            <button id="Feb19" class="day-button" onclick="showFebDayPopup('Feb19')">19</button>
+            <button id="Feb20" class="day-button" onclick="showFebDayPopup('Feb20')">20</button>
+            <button id="Feb21" class="day-button" onclick="showFebDayPopup('Feb21')">21</button>
+            <button id="Feb22" class="day-button" onclick="showFebDayPopup('Feb22')">22</button>
+            <button id="Feb23" class="day-button" onclick="showFebDayPopup('Feb23')">23</button>
+            <button id="Feb24" class="day-button" onclick="showFebDayPopup('Feb24')">24</button>
+            <button id="Feb25" class="day-button" onclick="showFebDayPopup('Feb25')">25</button>
+            <button id="Feb26" class="day-button" onclick="showFebDayPopup('Feb26')">26</button>
+            <button id="Feb27" class="day-button" onclick="showFebDayPopup('Feb27')">27</button>
+            <button id="Feb28" class="day-button" onclick="showFebDayPopup('Feb28')">28</button>
+            <button id="monthclose" onclick="hideFebruaryButtonsPopup()">Close</button>
+        </div>
+
+        <div id="march-popup">
+            <h2>Select a Day below to enter values</h2>
+            <button id="Mar1" class="day-button" onclick="showMarDayPopup('Mar1')">01</button>
+            <button id="Mar2" class="day-button" onclick="showMarDayPopup('Mar2')">02</button>
+            <button id="Mar3" class="day-button" onclick="showMarDayPopup('Mar3')">03</button>
+            <button id="Mar4" class="day-button" onclick="showMarDayPopup('Mar4')">04</button>
+            <button id="Mar5" class="day-button" onclick="showMarDayPopup('Mar5')">05</button>
+            <button id="Mar6" class="day-button" onclick="showMarDayPopup('Mar6')">06</button>
+            <button id="Mar7" class="day-button" onclick="showMarDayPopup('Mar7')">07</button>
+            <button id="Mar8" class="day-button" onclick="showMarDayPopup('Mar8')">08</button>
+            <button id="Mar9" class="day-button" onclick="showMarDayPopup('Mar9')">09</button>
+            <button id="Mar10" class="day-button" onclick="showMarDayPopup('Mar10')">10</button>
+            <button id="Mar11" class="day-button" onclick="showMarDayPopup('Mar11')">11</button>
+            <button id="Mar12" class="day-button" onclick="showMarDayPopup('Mar12')">12</button>
+            <button id="Mar13" class="day-button" onclick="showMarDayPopup('Mar13')">13</button>
+            <button id="Mar14" class="day-button" onclick="showMarDayPopup('Mar14')">14</button>
+            <button id="Mar15" class="day-button" onclick="showMarDayPopup('Mar15')">15</button>
+            <button id="Mar16" class="day-button" onclick="showMarDayPopup('Mar16')">16</button>
+            <button id="Mar17" class="day-button" onclick="showMarDayPopup('Mar17')">17</button>
+            <button id="Mar18" class="day-button" onclick="showMarDayPopup('Mar18')">18</button>
+            <button id="Mar19" class="day-button" onclick="showMarDayPopup('Mar19')">19</button>
+            <button id="Mar20" class="day-button" onclick="showMarDayPopup('Mar20')">20</button>
+            <button id="Mar21" class="day-button" onclick="showMarDayPopup('Mar21')">21</button>
+            <button id="Mar22" class="day-button" onclick="showMarDayPopup('Mar22')">22</button>
+            <button id="Mar23" class="day-button" onclick="showMarDayPopup('Mar23')">23</button>
+            <button id="Mar24" class="day-button" onclick="showMarDayPopup('Mar24')">24</button>
+            <button id="Mar25" class="day-button" onclick="showMarDayPopup('Mar25')">25</button>
+            <button id="Mar26" class="day-button" onclick="showMarDayPopup('Mar26')">26</button>
+            <button id="Mar27" class="day-button" onclick="showMarDayPopup('Mar27')">27</button>
+            <button id="Mar28" class="day-button" onclick="showMarDayPopup('Mar28')">28</button>
+            <button id="Mar29" class="day-button" onclick="showMarDayPopup('Mar29')">29</button>
+            <button id="Mar30" class="day-button" onclick="showMarDayPopup('Mar30')">30</button>
+            <button id="Mar31" class="day-button" onclick="showMarDayPopup('Mar31')">31</button>
+            <button id="monthclose"onclick="hideMarchButtonsPopup()">Close</button>
+        </div>
+
+        <div id="april-popup">
+            <h2>Select a Day below to enter values</h2>
+            <button id="Apr1" class="day-button" onclick="showAprDayPopup('Apr1')">01</button>
+            <button id="Apr2" class="day-button" onclick="showAprDayPopup('Apr2')">02</button>
+            <button id="Apr3" class="day-button" onclick="showAprDayPopup('Apr3')">03</button>
+            <button id="Apr4" class="day-button" onclick="showAprDayPopup('Apr4')">04</button>
+            <button id="Apr5" class="day-button" onclick="showAprDayPopup('Apr5')">05</button>
+            <button id="Apr6" class="day-button" onclick="showAprDayPopup('Apr6')">06</button>
+            <button id="Apr7" class="day-button" onclick="showAprDayPopup('Apr7')">07</button>
+            <button id="Apr8" class="day-button" onclick="showAprDayPopup('Apr8')">08</button>
+            <button id="Apr9" class="day-button" onclick="showAprDayPopup('Apr9')">09</button>
+            <button id="Apr10" class="day-button" onclick="showAprDayPopup('Apr10')">10</button>
+            <button id="Apr11" class="day-button" onclick="showAprDayPopup('Apr11')">11</button>
+            <button id="Apr12" class="day-button" onclick="showAprDayPopup('Apr12')">12</button>
+            <button id="Apr13" class="day-button" onclick="showAprDayPopup('Apr13')">13</button>
+            <button id="Apr14" class="day-button" onclick="showAprDayPopup('Apr14')">14</button>
+            <button id="Apr15" class="day-button" onclick="showAprDayPopup('Apr15')">15</button>
+            <button id="Apr16" class="day-button" onclick="showAprDayPopup('Apr16')">16</button>
+            <button id="Apr17" class="day-button" onclick="showAprDayPopup('Apr17')">17</button>
+            <button id="Apr18" class="day-button" onclick="showAprDayPopup('Apr18')">18</button>
+            <button id="Apr19" class="day-button" onclick="showAprDayPopup('Apr19')">19</button>
+            <button id="Apr20" class="day-button" onclick="showAprDayPopup('Apr20')">20</button>
+            <button id="Apr21" class="day-button" onclick="showAprDayPopup('Apr21')">21</button>
+            <button id="Apr22" class="day-button" onclick="showAprDayPopup('Apr22')">22</button>
+            <button id="Apr23" class="day-button" onclick="showAprDayPopup('Apr23')">23</button>
+            <button id="Apr24" class="day-button" onclick="showAprDayPopup('Apr24')">24</button>
+            <button id="Apr25" class="day-button" onclick="showAprDayPopup('Apr25')">25</button>
+            <button id="Apr26" class="day-button" onclick="showAprDayPopup('Apr26')">26</button>
+            <button id="Apr27" class="day-button" onclick="showAprDayPopup('Apr27')">27</button>
+            <button id="Apr28" class="day-button" onclick="showAprDayPopup('Apr28')">28</button>
+            <button id="Apr29" class="day-button" onclick="showAprDayPopup('Apr29')">29</button>
+            <button id="Apr30" class="day-button" onclick="showAprDayPopup('Apr30')">30</button>
+            <button id="monthclose"onclick="hideAprilButtonsPopup()">Close</button>
+        </div>
+
+        <div id="may-popup">
+            <h2>Select a Day below to enter values</h2>
+            <button id="May1" class="day-button" onclick="showMayDayPopup('May1')">01</button>
+            <button id="May2" class="day-button" onclick="showMayDayPopup('May2')">02</button>
+            <button id="May3" class="day-button" onclick="showMayDayPopup('May3')">03</button>
+            <button id="May4" class="day-button" onclick="showMayDayPopup('May4')">04</button>
+            <button id="May5" class="day-button" onclick="showMayDayPopup('May5')">05</button>
+            <button id="May6" class="day-button" onclick="showMayDayPopup('May6')">06</button>
+            <button id="May7" class="day-button" onclick="showMayDayPopup('May7')">07</button>
+            <button id="May8" class="day-button" onclick="showMayDayPopup('May8')">08</button>
+            <button id="May9" class="day-button" onclick="showMayDayPopup('May9')">09</button>
+            <button id="May10" class="day-button" onclick="showMayDayPopup('May10')">10</button>
+            <button id="May11" class="day-button" onclick="showMayDayPopup('May11')">11</button>
+            <button id="May12" class="day-button" onclick="showMayDayPopup('May12')">12</button>
+            <button id="May13" class="day-button" onclick="showMayDayPopup('May13')">13</button>
+            <button id="May14" class="day-button" onclick="showMayDayPopup('May14')">14</button>
+            <button id="May15" class="day-button" onclick="showMayDayPopup('May15')">15</button>
+            <button id="May16" class="day-button" onclick="showMayDayPopup('May16')">16</button>
+            <button id="May17" class="day-button" onclick="showMayDayPopup('May17')">17</button>
+            <button id="May18" class="day-button" onclick="showMayDayPopup('May18')">18</button>
+            <button id="May19" class="day-button" onclick="showMayDayPopup('May19')">19</button>
+            <button id="May20" class="day-button" onclick="showMayDayPopup('May20')">20</button>
+            <button id="May21" class="day-button" onclick="showMayDayPopup('May21')">21</button>
+            <button id="May22" class="day-button" onclick="showMayDayPopup('May22')">22</button>
+            <button id="May23" class="day-button" onclick="showMayDayPopup('May23')">23</button>
+            <button id="May24" class="day-button" onclick="showMayDayPopup('May24')">24</button>
+            <button id="May25" class="day-button" onclick="showMayDayPopup('May25')">25</button>
+            <button id="May26" class="day-button" onclick="showMayDayPopup('May26')">26</button>
+            <button id="May27" class="day-button" onclick="showMayDayPopup('May27')">27</button>
+            <button id="May28" class="day-button" onclick="showMayDayPopup('May28')">28</button>
+            <button id="May29" class="day-button" onclick="showMayDayPopup('May29')">29</button>
+            <button id="May30" class="day-button" onclick="showMayDayPopup('May30')">30</button>
+            <button id="May31" class="day-button" onclick="showMayDayPopup('May31')">31</button>
+            <button id="monthclose"onclick="hideMayButtonsPopup()">Close</button>
+        </div>
+
+        <div id="june-popup">
+            <h2>Select a Day below to enter values</h2>
+            <button id="Jun1" class="day-button" onclick="showJunDayPopup('Jun1')">01</button>
+            <button id="Jun2" class="day-button" onclick="showJunDayPopup('Jun2')">02</button>
+            <button id="Jun3" class="day-button" onclick="showJunDayPopup('Jun3')">03</button>
+            <button id="Jun4" class="day-button" onclick="showJunDayPopup('Jun4')">04</button>
+            <button id="Jun5" class="day-button" onclick="showJunDayPopup('Jun5')">05</button>
+            <button id="Jun6" class="day-button" onclick="showJunDayPopup('Jun6')">06</button>
+            <button id="Jun7" class="day-button" onclick="showJunDayPopup('Jun7')">07</button>
+            <button id="Jun8" class="day-button" onclick="showJunDayPopup('Jun8')">08</button>
+            <button id="Jun9" class="day-button" onclick="showJunDayPopup('Jun9')">09</button>
+            <button id="Jun10" class="day-button" onclick="showJunDayPopup('Jun10')">10</button>
+            <button id="Jun11" class="day-button" onclick="showJunDayPopup('Jun11')">11</button>
+            <button id="Jun12" class="day-button" onclick="showJunDayPopup('Jun12')">12</button>
+            <button id="Jun13" class="day-button" onclick="showJunDayPopup('Jun13')">13</button>
+            <button id="Jun14" class="day-button" onclick="showJunDayPopup('Jun14')">14</button>
+            <button id="Jun15" class="day-button" onclick="showJunDayPopup('Jun15')">15</button>
+            <button id="Jun16" class="day-button" onclick="showJunDayPopup('Jun16')">16</button>
+            <button id="Jun17" class="day-button" onclick="showJunDayPopup('Jun17')">17</button>
+            <button id="Jun18" class="day-button" onclick="showJunDayPopup('Jun18')">18</button>
+            <button id="Jun19" class="day-button" onclick="showJunDayPopup('Jun19')">19</button>
+            <button id="Jun20" class="day-button" onclick="showJunDayPopup('Jun20')">20</button>
+            <button id="Jun21" class="day-button" onclick="showJunDayPopup('Jun21')">21</button>
+            <button id="Jun22" class="day-button" onclick="showJunDayPopup('Jun22')">22</button>
+            <button id="Jun23" class="day-button" onclick="showJunDayPopup('Jun23')">23</button>
+            <button id="Jun24" class="day-button" onclick="showJunDayPopup('Jun24')">24</button>
+            <button id="Jun25" class="day-button" onclick="showJunDayPopup('Jun25')">25</button>
+            <button id="Jun26" class="day-button" onclick="showJunDayPopup('Jun26')">26</button>
+            <button id="Jun27" class="day-button" onclick="showJunDayPopup('Jun27')">27</button>
+            <button id="Jun28" class="day-button" onclick="showJunDayPopup('Jun28')">28</button>
+            <button id="Jun29" class="day-button" onclick="showJunDayPopup('Jun29')">29</button>
+            <button id="Jun30" class="day-button" onclick="showJunDayPopup('Jun30')">30</button>
+            <button id="monthclose"onclick="hideJuneButtonsPopup()">Close</button>
+        </div>
+
+        <div id="july-popup">
+            <h2>Select a Day below to enter values</h2>
+            <button id="Jul1" class="day-button" onclick="showJulDayPopup('Jul1')">01</button>
+            <button id="Jul2" class="day-button" onclick="showJulDayPopup('Jul2')">02</button>
+            <button id="Jul3" class="day-button" onclick="showJulDayPopup('Jul3')">03</button>
+            <button id="Jul4" class="day-button" onclick="showJulDayPopup('Jul4')">04</button>
+            <button id="Jul5" class="day-button" onclick="showJulDayPopup('Jul5')">05</button>
+            <button id="Jul6" class="day-button" onclick="showJulDayPopup('Jul6')">06</button>
+            <button id="Jul7" class="day-button" onclick="showJulDayPopup('Jul7')">07</button>
+            <button id="Jul8" class="day-button" onclick="showJulDayPopup('Jul8')">08</button>
+            <button id="Jul9" class="day-button" onclick="showJulDayPopup('Jul9')">09</button>
+            <button id="Jul10" class="day-button" onclick="showJulDayPopup('Jul10')">10</button>
+            <button id="Jul11" class="day-button" onclick="showJulDayPopup('Jul11')">11</button>
+            <button id="Jul12" class="day-button" onclick="showJulDayPopup('Jul12')">12</button>
+            <button id="Jul13" class="day-button" onclick="showJulDayPopup('Jul13')">13</button>
+            <button id="Jul14" class="day-button" onclick="showJulDayPopup('Jul14')">14</button>
+            <button id="Jul15" class="day-button" onclick="showJulDayPopup('Jul15')">15</button>
+            <button id="Jul16" class="day-button" onclick="showJulDayPopup('Jul16')">16</button>
+            <button id="Jul17" class="day-button" onclick="showJulDayPopup('Jul17')">17</button>
+            <button id="Jul18" class="day-button" onclick="showJulDayPopup('Jul18')">18</button>
+            <button id="Jul19" class="day-button" onclick="showJulDayPopup('Jul19')">19</button>
+            <button id="Jul20" class="day-button" onclick="showJulDayPopup('Jul20')">20</button>
+            <button id="Jul21" class="day-button" onclick="showJulDayPopup('Jul21')">21</button>
+            <button id="Jul22" class="day-button" onclick="showJulDayPopup('Jul22')">22</button>
+            <button id="Jul23" class="day-button" onclick="showJulDayPopup('Jul23')">23</button>
+            <button id="Jul24" class="day-button" onclick="showJulDayPopup('Jul24')">24</button>
+            <button id="Jul25" class="day-button" onclick="showJulDayPopup('Jul25')">25</button>
+            <button id="Jul26" class="day-button" onclick="showJulDayPopup('Jul26')">26</button>
+            <button id="Jul27" class="day-button" onclick="showJulDayPopup('Jul27')">27</button>
+            <button id="Jul28" class="day-button" onclick="showJulDayPopup('Jul28')">28</button>
+            <button id="Jul29" class="day-button" onclick="showJulDayPopup('Jul29')">29</button>
+            <button id="Jul30" class="day-button" onclick="showJulDayPopup('Jul30')">30</button>
+            <button id="Jul31" class="day-button" onclick="showJulDayPopup('Jul31')">31</button>
+            <button id="monthclose"onclick="hideJulyButtonsPopup()">Close</button>
+        </div>
+
+        <div id="august-popup">
+            <h2>Select a Day below to enter values</h2>
+            <button id="Aug1" class="day-button" onclick="showAugDayPopup('Aug1')">01</button>
+            <button id="Aug2" class="day-button" onclick="showAugDayPopup('Aug2')">02</button>
+            <button id="Aug3" class="day-button" onclick="showAugDayPopup('Aug3')">03</button>
+            <button id="Aug4" class="day-button" onclick="showAugDayPopup('Aug4')">04</button>
+            <button id="Aug5" class="day-button" onclick="showAugDayPopup('Aug5')">05</button>
+            <button id="Aug6" class="day-button" onclick="showAugDayPopup('Aug6')">06</button>
+            <button id="Aug7" class="day-button" onclick="showAugDayPopup('Aug7')">07</button>
+            <button id="Aug8" class="day-button" onclick="showAugDayPopup('Aug8')">08</button>
+            <button id="Aug9" class="day-button" onclick="showAugDayPopup('Aug9')">09</button>
+            <button id="Aug10" class="day-button" onclick="showAugDayPopup('Aug10')">10</button>
+            <button id="Aug11" class="day-button" onclick="showAugDayPopup('Aug11')">11</button>
+            <button id="Aug12" class="day-button" onclick="showAugDayPopup('Aug12')">12</button>
+            <button id="Aug13" class="day-button" onclick="showAugDayPopup('Aug13')">13</button>
+            <button id="Aug14" class="day-button" onclick="showAugDayPopup('Aug14')">14</button>
+            <button id="Aug15" class="day-button" onclick="showAugDayPopup('Aug15')">15</button>
+            <button id="Aug16" class="day-button" onclick="showAugDayPopup('Aug16')">16</button>
+            <button id="Aug17" class="day-button" onclick="showAugDayPopup('Aug17')">17</button>
+            <button id="Aug18" class="day-button" onclick="showAugDayPopup('Aug18')">18</button>
+            <button id="Aug19" class="day-button" onclick="showAugDayPopup('Aug19')">19</button>
+            <button id="Aug20" class="day-button" onclick="showAugDayPopup('Aug20')">20</button>
+            <button id="Aug21" class="day-button" onclick="showAugDayPopup('Aug21')">21</button>
+            <button id="Aug22" class="day-button" onclick="showAugDayPopup('Aug22')">22</button>
+            <button id="Aug23" class="day-button" onclick="showAugDayPopup('Aug23')">23</button>
+            <button id="Aug24" class="day-button" onclick="showAugDayPopup('Aug24')">24</button>
+            <button id="Aug25" class="day-button" onclick="showAugDayPopup('Aug25')">25</button>
+            <button id="Aug26" class="day-button" onclick="showAugDayPopup('Aug26')">26</button>
+            <button id="Aug27" class="day-button" onclick="showAugDayPopup('Aug27')">27</button>
+            <button id="Aug28" class="day-button" onclick="showAugDayPopup('Aug28')">28</button>
+            <button id="Aug29" class="day-button" onclick="showAugDayPopup('Aug29')">29</button>
+            <button id="Aug30" class="day-button" onclick="showAugDayPopup('Aug30')">30</button>
+            <button id="Aug31" class="day-button" onclick="showAugDayPopup('Aug31')">31</button>
+            <button id="monthclose"onclick="hideAugustButtonsPopup()">Close</button>
+        </div>
+
+        <div id="september-popup">
+            <h2>Select a Day below to enter values</h2>
+            <button id="Sep1" class="day-button" onclick="showSepDayPopup('Sep1')">01</button>
+            <button id="Sep2" class="day-button" onclick="showSepDayPopup('Sep2')">02</button>
+            <button id="Sep3" class="day-button" onclick="showSepDayPopup('Sep3')">03</button>
+            <button id="Sep4" class="day-button" onclick="showSepDayPopup('Sep4')">04</button>
+            <button id="Sep5" class="day-button" onclick="showSepDayPopup('Sep5')">05</button>
+            <button id="Sep6" class="day-button" onclick="showSepDayPopup('Sep6')">06</button>
+            <button id="Sep7" class="day-button" onclick="showSepDayPopup('Sep7')">07</button>
+            <button id="Sep8" class="day-button" onclick="showSepDayPopup('Sep8')">08</button>
+            <button id="Sep9" class="day-button" onclick="showSepDayPopup('Sep9')">09</button>
+            <button id="Sep10" class="day-button" onclick="showSepDayPopup('Sep10')">10</button>
+            <button id="Sep11" class="day-button" onclick="showSepDayPopup('Sep11')">11</button>
+            <button id="Sep12" class="day-button" onclick="showSepDayPopup('Sep12')">12</button>
+            <button id="Sep13" class="day-button" onclick="showSepDayPopup('Sep13')">13</button>
+            <button id="Sep14" class="day-button" onclick="showSepDayPopup('Sep14')">14</button>
+            <button id="Sep15" class="day-button" onclick="showSepDayPopup('Sep15')">15</button>
+            <button id="Sep16" class="day-button" onclick="showSepDayPopup('Sep16')">16</button>
+            <button id="Sep17" class="day-button" onclick="showSepDayPopup('Sep17')">17</button>
+            <button id="Sep18" class="day-button" onclick="showSepDayPopup('Sep18')">18</button>
+            <button id="Sep19" class="day-button" onclick="showSepDayPopup('Sep19')">19</button>
+            <button id="Sep20" class="day-button" onclick="showSepDayPopup('Sep20')">20</button>
+            <button id="Sep21" class="day-button" onclick="showSepDayPopup('Sep21')">21</button>
+            <button id="Sep22" class="day-button" onclick="showSepDayPopup('Sep22')">22</button>
+            <button id="Sep23" class="day-button" onclick="showSepDayPopup('Sep23')">23</button>
+            <button id="Sep24" class="day-button" onclick="showSepDayPopup('Sep24')">24</button>
+            <button id="Sep25" class="day-button" onclick="showSepDayPopup('Sep25')">25</button>
+            <button id="Sep26" class="day-button" onclick="showSepDayPopup('Sep26')">26</button>
+            <button id="Sep27" class="day-button" onclick="showSepDayPopup('Sep27')">27</button>
+            <button id="Sep28" class="day-button" onclick="showSepDayPopup('Sep28')">28</button>
+            <button id="Sep29" class="day-button" onclick="showSepDayPopup('Sep29')">29</button>
+            <button id="Sep30" class="day-button" onclick="showSepDayPopup('Sep30')">30</button>
+            <button id="monthclose"onclick="hideSeptemberButtonsPopup()">Close</button>
+        </div>
+
+        <div id="october-popup">
+            <h2>Select a Day below to enter values</h2>
+            <button id="Oct1" class="day-button" onclick="showOctDayPopup('Oct1')">01</button>
+            <button id="Oct2" class="day-button" onclick="showOctDayPopup('Oct2')">02</button>
+            <button id="Oct3" class="day-button" onclick="showOctDayPopup('Oct3')">03</button>
+            <button id="Oct4" class="day-button" onclick="showOctDayPopup('Oct4')">04</button>
+            <button id="Oct5" class="day-button" onclick="showOctDayPopup('Oct5')">05</button>
+            <button id="Oct6" class="day-button" onclick="showOctDayPopup('Oct6')">06</button>
+            <button id="Oct7" class="day-button" onclick="showOctDayPopup('Oct7')">07</button>
+            <button id="Oct8" class="day-button" onclick="showOctDayPopup('Oct8')">08</button>
+            <button id="Oct9" class="day-button" onclick="showOctDayPopup('Oct9')">09</button>
+            <button id="Oct10" class="day-button" onclick="showOctDayPopup('Oct10')">10</button>
+            <button id="Oct11" class="day-button" onclick="showOctDayPopup('Oct11')">11</button>
+            <button id="Oct12" class="day-button" onclick="showOctDayPopup('Oct12')">12</button>
+            <button id="Oct13" class="day-button" onclick="showOctDayPopup('Oct13')">13</button>
+            <button id="Oct14" class="day-button" onclick="showOctDayPopup('Oct14')">14</button>
+            <button id="Oct15" class="day-button" onclick="showOctDayPopup('Oct15')">15</button>
+            <button id="Oct16" class="day-button" onclick="showOctDayPopup('Oct16')">16</button>
+            <button id="Oct17" class="day-button" onclick="showOctDayPopup('Oct17')">17</button>
+            <button id="Oct18" class="day-button" onclick="showOctDayPopup('Oct18')">18</button>
+            <button id="Oct19" class="day-button" onclick="showOctDayPopup('Oct19')">19</button>
+            <button id="Oct20" class="day-button" onclick="showOctDayPopup('Oct20')">20</button>
+            <button id="Oct21" class="day-button" onclick="showOctDayPopup('Oct21')">21</button>
+            <button id="Oct22" class="day-button" onclick="showOctDayPopup('Oct22')">22</button>
+            <button id="Oct23" class="day-button" onclick="showOctDayPopup('Oct23')">23</button>
+            <button id="Oct24" class="day-button" onclick="showOctDayPopup('Oct24')">24</button>
+            <button id="Oct25" class="day-button" onclick="showOctDayPopup('Oct25')">25</button>
+            <button id="Oct26" class="day-button" onclick="showOctDayPopup('Oct26')">26</button>
+            <button id="Oct27" class="day-button" onclick="showOctDayPopup('Oct27')">27</button>
+            <button id="Oct28" class="day-button" onclick="showOctDayPopup('Oct28')">28</button>
+            <button id="Oct29" class="day-button" onclick="showOctDayPopup('Oct29')">29</button>
+            <button id="Oct30" class="day-button" onclick="showOctDayPopup('Oct30')">30</button>
+            <button id="Oct31" class="day-button" onclick="showOctDayPopup('Oct31')">31</button>
+            <button id="monthclose"onclick="hideOctoberButtonsPopup()">Close</button>
+        </div>
+
+        <div id="november-popup">
+            <h2>Select a Day below to enter values</h2>
+            <button id="Nov1" class="day-button" onclick="showNovDayPopup('Nov1')">01</button>
+            <button id="Nov2" class="day-button" onclick="showNovDayPopup('Nov2')">02</button>
+            <button id="Nov3" class="day-button" onclick="showNovDayPopup('Nov3')">03</button>
+            <button id="Nov4" class="day-button" onclick="showNovDayPopup('Nov4')">04</button>
+            <button id="Nov5" class="day-button" onclick="showNovDayPopup('Nov5')">05</button>
+            <button id="Nov6" class="day-button" onclick="showNovDayPopup('Nov6')">06</button>
+            <button id="Nov7" class="day-button" onclick="showNovDayPopup('Nov7')">07</button>
+            <button id="Nov8" class="day-button" onclick="showNovDayPopup('Nov8')">08</button>
+            <button id="Nov9" class="day-button" onclick="showNovDayPopup('Nov9')">09</button>
+            <button id="Nov10" class="day-button" onclick="showNovDayPopup('Nov10')">10</button>
+            <button id="Nov11" class="day-button" onclick="showNovDayPopup('Nov11')">11</button>
+            <button id="Nov12" class="day-button" onclick="showNovDayPopup('Nov12')">12</button>
+            <button id="Nov13" class="day-button" onclick="showNovDayPopup('Nov13')">13</button>
+            <button id="Nov14" class="day-button" onclick="showNovDayPopup('Nov14')">14</button>
+            <button id="Nov15" class="day-button" onclick="showNovDayPopup('Nov15')">15</button>
+            <button id="Nov16" class="day-button" onclick="showNovDayPopup('Nov16')">16</button>
+            <button id="Nov17" class="day-button" onclick="showNovDayPopup('Nov17')">17</button>
+            <button id="Nov18" class="day-button" onclick="showNovDayPopup('Nov18')">18</button>
+            <button id="Nov19" class="day-button" onclick="showNovDayPopup('Nov19')">19</button>
+            <button id="Nov20" class="day-button" onclick="showNovDayPopup('Nov20')">20</button>
+            <button id="Nov21" class="day-button" onclick="showNovDayPopup('Nov21')">21</button>
+            <button id="Nov22" class="day-button" onclick="showNovDayPopup('Nov22')">22</button>
+            <button id="Nov23" class="day-button" onclick="showNovDayPopup('Nov23')">23</button>
+            <button id="Nov24" class="day-button" onclick="showNovDayPopup('Nov24')">24</button>
+            <button id="Nov25" class="day-button" onclick="showNovDayPopup('Nov25')">25</button>
+            <button id="Nov26" class="day-button" onclick="showNovDayPopup('Nov26')">26</button>
+            <button id="Nov27" class="day-button" onclick="showNovDayPopup('Nov27')">27</button>
+            <button id="Nov28" class="day-button" onclick="showNovDayPopup('Nov28')">28</button>
+            <button id="Nov29" class="day-button" onclick="showNovDayPopup('Nov29')">29</button>
+            <button id="Nov30" class="day-button" onclick="showNovDayPopup('Nov30')">30</button>
+            <button id="monthclose"onclick="hideNovemberButtonsPopup()">Close</button>
+        </div>
+
+        <div id="december-popup">
+            <h2>Select a Day below to enter values</h2>
+            <button id="Dec1" class="day-button" onclick="showDecDayPopup('Dec1')">01</button>
+            <button id="Dec2" class="day-button" onclick="showDecDayPopup('Dec2')">02</button>
+            <button id="Dec3" class="day-button" onclick="showDecDayPopup('Dec3')">03</button>
+            <button id="Dec4" class="day-button" onclick="showDecDayPopup('Dec4')">04</button>
+            <button id="Dec5" class="day-button" onclick="showDecDayPopup('Dec5')">05</button>
+            <button id="Dec6" class="day-button" onclick="showDecDayPopup('Dec6')">06</button>
+            <button id="Dec7" class="day-button" onclick="showDecDayPopup('Dec7')">07</button>
+            <button id="Dec8" class="day-button" onclick="showDecDayPopup('Dec8')">08</button>
+            <button id="Dec9" class="day-button" onclick="showDecDayPopup('Dec9')">09</button>
+            <button id="Dec10" class="day-button" onclick="showDecDayPopup('Dec10')">10</button>
+            <button id="Dec11" class="day-button" onclick="showDecDayPopup('Dec11')">11</button>
+            <button id="Dec12" class="day-button" onclick="showDecDayPopup('Dec12')">12</button>
+            <button id="Dec13" class="day-button" onclick="showDecDayPopup('Dec13')">13</button>
+            <button id="Dec14" class="day-button" onclick="showDecDayPopup('Dec14')">14</button>
+            <button id="Dec15" class="day-button" onclick="showDecDayPopup('Dec15')">15</button>
+            <button id="Dec16" class="day-button" onclick="showDecDayPopup('Dec16')">16</button>
+            <button id="Dec17" class="day-button" onclick="showDecDayPopup('Dec17')">17</button>
+            <button id="Dec18" class="day-button" onclick="showDecDayPopup('Dec18')">18</button>
+            <button id="Dec19" class="day-button" onclick="showDecDayPopup('Dec19')">19</button>
+            <button id="Dec20" class="day-button" onclick="showDecDayPopup('Dec20')">20</button>
+            <button id="Dec21" class="day-button" onclick="showDecDayPopup('Dec21')">21</button>
+            <button id="Dec22" class="day-button" onclick="showDecDayPopup('Dec22')">22</button>
+            <button id="Dec23" class="day-button" onclick="showDecDayPopup('Dec23')">23</button>
+            <button id="Dec24" class="day-button" onclick="showDecDayPopup('Dec24')">24</button>
+            <button id="Dec25" class="day-button" onclick="showDecDayPopup('Dec25')">25</button>
+            <button id="Dec26" class="day-button" onclick="showDecDayPopup('Dec26')">26</button>
+            <button id="Dec27" class="day-button" onclick="showDecDayPopup('Dec27')">27</button>
+            <button id="Dec28" class="day-button" onclick="showDecDayPopup('Dec28')">28</button>
+            <button id="Dec29" class="day-button" onclick="showDecDayPopup('Dec29')">29</button>
+            <button id="Dec30" class="day-button" onclick="showDecDayPopup('Dec30')">30</button>
+            <button id="Dec31" class="day-button" onclick="showDecDayPopup('Dec31')">31</button>
+            <button id="monthclose"onclick="hideDecemberButtonsPopup()">Close</button>
+        </div>
+
+        <div id="popup" style="display: none;">
+            <form id="popup-form">
+                <h2 id="selected-day">Selected Day</h2>
+        
+                <label for="item-dropdown" style="font-size: 20px";>Select type of activity:</label>
+                <select id="item-dropdown">
+                    <option value="Cycling">Cycling</option>
+                    <option value="Treadmill">Treadmill</option>
+                    <option value="Weights">Weights</option>
+                    <option value="Walking">Walking</option>
+                </select>
+        
+                <br />
+        
+                <label for="number-input" style="font-size: 20px";>Enter duration:</label>
+                <input type="number" id="number-input" required>
+        
+                <br />
+
+                <button id="submit-button" type="submit">Submit</button>
+                <button id="dayclose" type="button" onclick="hidePopup()">Close</button>
+            </form>
+        </div>
+
+    <button id="delete-button" type="button">Delete Current Day</button>
+
+    <script src="script.js"></script>
+</body>
+</html>

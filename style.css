@@ -1,0 +1,46 @@
+#top {
+    background-color: #33ff88;
+    margin-top: 15px;
+    padding-top: 10px;
+    border: gray solid 2px;
+    width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+fieldset {
+    margin-top: 4px;
+    background-color: #8f8e6e;
+}
+legend {
+    color: #d46622;
+    background-color: #ccadbe;
+    border: 1px solid #72072e;
+    padding: 3px;
+    font-weight: bold;
+}
+table {
+    width: 80%;
+    margin: 4px;
+    padding: 4px;
+}
+td {
+    padding: 2px;
+}
+.required {
+    color: #ffa600;
+}
+#data p {
+    padding-left: 8px;
+}
+a:active {
+    color: blue;
+}
+h1[id="Page header"] {
+    color: red;
+}
+h2 {
+    color: blue;
+}
+.date {
+    text-align: right;
+}

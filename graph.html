@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="navbarstyle.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        max-width: 300px;
+        text-align: center;
+        }
+        .table-container {
+        text-align: center;
+        }
+
+        .monthly-totals-table {
+        border-collapse: collapse;
+        margin: auto;
+        }
+
+        .monthly-totals-table th, .monthly-totals-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+        }
+    </style>
+    <script>
+        let savedData = JSON.parse(localStorage.getItem("savedData")) || {};
+        const monthlyData = organizeDataByMonths(savedData);
+        const sortedMonths = Object.keys(monthlyData).sort((a, b) => {
+        const dateA = new Date(a + "-01");
+        const dateB = new Date(b + "-01");
+        return dateA - dateB;
+        });
+    document.addEventListener("DOMContentLoaded", function () {
+    
+
+    const datasets = createDatasets(monthlyData, sortedMonths);
+
+    // Create stacked bar graph
+    createStackedBarGraph(sortedMonths, datasets);
+
+    displayMonthlyTotals(monthlyData);
+});
+
+function organizeDataByMonths(savedData) {
+    const monthlyData = {};
+
+    for (let day in savedData) {
+        if (savedData.hasOwnProperty(day)) {
+            const entries = savedData[day];
+            const month = getMonthFromDate(day);
+
+            if (!monthlyData[month]) {
+                monthlyData[month] = {
+                    cycling: 0,
+                    treadmill: 0,
+                    weights: 0,
+                    walking: 0,
+                };
+            }
+
+            entries.forEach((entry) => {
+                if (entry.item === "Cycling") {
+                    monthlyData[month].cycling += parseInt(entry.number, 10);
+                } else if (entry.item === "Treadmill") {
+                    monthlyData[month].treadmill += parseInt(entry.number, 10);
+                } else if (entry.item === "Weights") {
+                    monthlyData[month].weights += parseInt(entry.number, 10);
+                } else if (entry.item === "Walking") {
+                    monthlyData[month].walking += parseInt(entry.number, 10);
+                }
+            });
+        }
+    }
+
+    return monthlyData;
+}
+
+function getMonthFromDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleString('en-US', { month: 'long' });
+}
+
+function createDatasets(monthlyData, sortedMonths) {
+    const cyclingData = [];
+    const treadmillData = [];
+    const weightsData = [];
+    const walkingData =[];
+
+    sortedMonths.forEach((month) => {
+        cyclingData.push(monthlyData[month].cycling);
+        treadmillData.push(monthlyData[month].treadmill);
+        weightsData.push(monthlyData[month].weights);
+        walkingData.push(monthlyData[month].walking);
+    });
+
+    return [
+        {
+            label: 'Cycling',
+            data: cyclingData,
+            backgroundColor: 'rgba(75, 140, 255, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+        },
+        {
+            label: 'Treadmill',
+            data: treadmillData,
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+        },
+        {
+            label: 'Weights',
+            data: weightsData,
+            backgroundColor: 'rgba(111, 255, 95, 0.2)',
+            borderColor: 'rgba(147, 200, 78, 1)',
+            borderWidth: 1
+        },
+        {
+            label: 'Walking',
+            data: walkingData,
+            backgroundColor: 'rgba(240,230,140, 0.2)',
+            borderColor: 'rgba(147, 200, 78, 1)',
+            borderWidth: 1
+        }
+    ];
+}
+
+function createStackedBarGraph(labels, datasets) {
+    const ctx = document.createElement("canvas").getContext("2d");
+
+    // Create a stacked bar chart
+    const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: datasets
+        },
+        options: {
+            scales: {
+                x: { stacked: true },
+                y: {
+                    stacked: true,
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function (value) {
+                            const hours = Math.floor(value / 60);
+                            const minutes = Math.round(value % 60);
+                            return `${hours}h ${minutes}m`;
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const hours = Math.floor(context.raw / 60);
+                            const minutes = Math.round(context.raw % 60);
+                            return `Total Hours: ${hours}h ${minutes}m`;
+                        }
+                    }
+                }
+            },
+        }
+    });
+    document.body.appendChild(ctx.canvas);
+}
+        function displayMonthlyTotals(monthlyData) {
+            const tableContainer = document.createElement("div");
+            tableContainer.className = "table-container";
+
+            const table = document.createElement("table");
+            table.className = "monthly-totals-table";
+
+            // Create table header
+            const headerRow = document.createElement("tr");
+            const headerMonthCell = document.createElement("th");
+            headerMonthCell.textContent = "Month";
+            headerRow.appendChild(headerMonthCell);
+
+            const headerCombinedTotalCell = document.createElement("th");
+            headerCombinedTotalCell.textContent = "Combined Total";
+            headerRow.appendChild(headerCombinedTotalCell);
+
+            table.appendChild(headerRow);
+
+            const sortedMonths = Object.keys(monthlyData).sort((a, b) => {
+                const dateA = new Date(a + "-01");
+                const dateB = new Date(b + "-01");
+                 return dateA - dateB;
+            });
+
+            // Create table rows with monthly combined totals
+            for (const month of sortedMonths) {
+                const row = document.createElement("tr");
+                const monthCell = document.createElement("td");
+                monthCell.textContent = month;
+                row.appendChild(monthCell);
+
+                const combinedTotalCell = document.createElement("td");
+                const totalCycling = monthlyData[month].cycling;
+                const totalTreadmill = monthlyData[month].treadmill;
+                const totalWeights = monthlyData[month].weights;
+                const totalWalking = monthlyData[month].walking;
+                const combinedTotalMinutes = totalCycling + totalTreadmill + totalWeights + totalWalking;
+
+                const hours = Math.floor(combinedTotalMinutes / 60);
+                const minutes = Math.round(combinedTotalMinutes % 60);
+
+                combinedTotalCell.textContent = `${hours}h ${minutes}m`;
+                row.appendChild(combinedTotalCell);
+
+                table.appendChild(row);
+            }
+
+            tableContainer.appendChild(table);
+            document.body.appendChild(tableContainer);
+        }
+
+    </script>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html">Home</a>
+        <a href="summary.html">Summary</a>
+        <a id="active" href="graph.html">Graph</a>
+    </div>
+    <!-- Your graph content will go here -->
+</body>
+</html>

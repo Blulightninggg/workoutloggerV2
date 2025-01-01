@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogYourWorkouts</title>
+    <link rel="stylesheet" href="navbarstyle.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+    table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+        </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html">Home</a>
+        <a id="active" href="summary.html">Summary</a>
+        <a href="graph.html">Graph</a>
+    </div>
+
+    <h2 style="color:rgb(11, 86, 199)">Daily Workout Summary</h2>
+
+    <div id="summary-container">
+    
+    </div>
+    <script>
+    // Function to display the summary on the Summary page
+    function displaySummary() {
+    console.log("Displaying Summary");
+    const summaryContainer = document.getElementById("summary-container");
+    console.log("Summary Container:", summaryContainer);
+    if (!summaryContainer) {
+        console.error("Error: Could not find 'summary-container' element.");
+        return; // Exit the function if the container is not found
+    }
+    summaryContainer.innerHTML = ""; // Clear previous content
+
+    const savedData = JSON.parse(localStorage.getItem("savedData")) || {};
+    const table = document.createElement("table");
+    const tableHeader = document.createElement("thead");
+    tableHeader.innerHTML = `
+        <tr>
+            <th>Date</th>
+            <th>Type of Activity</th>
+            <th>Duration (minutes)</th>
+        </tr>
+    `;
+    table.appendChild(tableHeader);
+
+    const tableBody = document.createElement("tbody");
+    let totalDuration = 0; // Initialize a variable to store the total duration
+
+   // Get sorted dates
+   const sortedDates = Object.keys(savedData).sort((a, b) => {
+        const dateA = new Date(`2000 ${a}`);
+        const dateB = new Date(`2000 ${b}`);
+        return dateA - dateB;
+    });
+
+    sortedDates.forEach((day) => {
+        const entries = savedData[day];
+        entries.forEach((entry) => {
+            const row = document.createElement("tr");
+            const duration = parseInt(entry.number, 10);
+            totalDuration += duration;
+            row.innerHTML = `
+                <td style="text-align: center;">${day}</td>
+                <td style="text-align: center;">${entry.item}</td>
+                <td style="text-align: center;">${duration}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    });
+    table.appendChild(tableBody);
+
+    summaryContainer.appendChild(table);
+    }
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        if (window.location.pathname.endsWith("summary.html")) {
+            displaySummary();
+            displayAdditionalSummary();
+        }
+    });
+    </script>
+</body>
+</html>
