@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
     let selectedYear = localStorage.getItem("selectedYear") || "2024"; // Default year
+    localStorage.setItem("selectedYear", selectedYear);
 
     // Update year selector buttons
     function updateYearSelector() {
@@ -41,6 +42,8 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    updateYearSelector();
+
     // Add event listeners for year buttons
     document.querySelectorAll(".yearOption").forEach((button) => {
         button.addEventListener("click", function () {
@@ -51,7 +54,18 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    updateYearSelector();
+    // Function to update button styles based on saved data
+    function updateButtonStyles(savedData) {
+        const yearData = savedData[selectedYear] || {};
+        document.querySelectorAll(".day-button").forEach((button) => {
+            const day = button.id;
+            if (Array.isArray(yearData[day]) && yearData[day].length > 0) {
+                button.style.backgroundColor = "green";
+            } else {
+                button.style.backgroundColor = "white";
+            }
+        });
+    }
 
     // update button styles based on saved data
     updateButtonStyles(savedData);
@@ -158,21 +172,6 @@ document.addEventListener("DOMContentLoaded", function () {
             updateButtonStyles(savedData);
         }
         // After performing the undo action, update button styles
-    }
-
-
-
-    // Function to update button styles based on saved data
-    function updateButtonStyles(savedData) {
-        const yearData = savedData[selectedYear] || {};
-        document.querySelectorAll(".day-button").forEach((button) => {
-            const day = button.id;
-            if (Array.isArray(yearData[day]) && yearData[day].length > 0) {
-                button.style.backgroundColor = "green";
-            } else {
-                button.style.backgroundColor = "white";
-            }
-        });
     }
 
      // Function to delete data for a specific day
