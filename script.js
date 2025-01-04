@@ -1,7 +1,57 @@
 document.addEventListener("DOMContentLoaded", function () {
     console.log("Document is fully loaded.");
-    // retrieve data from storage
+
+    // Retrieve saved data from localStorage
     let savedData = JSON.parse(localStorage.getItem("savedData")) || {};
+
+    // Migration logic to convert old data format to the new format
+    if (!savedData["2024"] && Object.keys(savedData).some(key => /^[A-Za-z]+\d+$/.test(key))) {
+        console.log("Migrating large data set to new format...");
+
+        // Create a new structure for the default year
+        const migratedData = { "2024": {} };
+
+        // Iterate through all the keys in the old format
+        for (const key in savedData) {
+            if (savedData.hasOwnProperty(key) && /^[A-Za-z]+\d+$/.test(key)) {
+                // Transfer each old key (e.g., "Jan5") to the new "2024" year
+                migratedData["2024"][key] = savedData[key];
+            }
+        }
+
+        // Save the migrated data back to localStorage
+        savedData = migratedData;
+        localStorage.setItem("savedData", JSON.stringify(savedData));
+
+        console.log("Migration complete:", savedData);
+    } else {
+        console.log("Data is already in the new format or no migration needed:", savedData);
+    }
+    
+    let selectedYear = localStorage.getItem("selectedYear") || "2024"; // Default year
+
+    // Update year selector buttons
+    function updateYearSelector() {
+        document.querySelectorAll(".yearOption").forEach((button) => {
+            if (button.dataset.year === selectedYear) {
+                button.classList.add("selected");
+            } else {
+                button.classList.remove("selected");
+            }
+        });
+    }
+
+    // Add event listeners for year buttons
+    document.querySelectorAll(".yearOption").forEach((button) => {
+        button.addEventListener("click", function () {
+            selectedYear = this.dataset.year;
+            localStorage.setItem("selectedYear", selectedYear);
+            updateYearSelector();
+            updateButtonStyles(savedData); // Update button styles based on selected year
+        });
+    });
+
+    updateYearSelector();
 
     // update button styles based on saved data
     updateButtonStyles(savedData);
@@ -39,38 +89,24 @@ document.addEventListener("DOMContentLoaded", function () {
     // Handle popup form submission outside the loop
     document.getElementById("popup-form").addEventListener("submit", function (event) {
         event.preventDefault();
-
-        let savedData = JSON.parse(localStorage.getItem("savedData")) || {};
-
-
-        if (!Array.isArray(savedData[currentDay])) {
-            savedData[currentDay] = [];
+    
+        const savedData = JSON.parse(localStorage.getItem("savedData")) || {};
+        if (!savedData[selectedYear]) {
+            savedData[selectedYear] = {};
         }
-
-        // Get values from the form
-        let selectedItem = document.getElementById("item-dropdown").value;
-        let numberValue = document.getElementById("number-input").value;
-        let newEntry = { item: selectedItem, number: numberValue };
-
-        console.log("Got values from form")
-        
-        // Update saved data
-        savedData[currentDay].push(newEntry);
-
-        console.log("Update Data")
-
-        // Save data to local storage
+    
+        if (!Array.isArray(savedData[selectedYear][currentDay])) {
+            savedData[selectedYear][currentDay] = [];
+        }
+    
+        const selectedItem = document.getElementById("item-dropdown").value;
+        const numberValue = document.getElementById("number-input").value;
+        const newEntry = { item: selectedItem, number: numberValue };
+    
+        savedData[selectedYear][currentDay].push(newEntry);
         localStorage.setItem("savedData", JSON.stringify(savedData));
-
-        console.log("Saved Data to storage")
-
-        // Update button style for the current day
-        document.getElementById(currentDay).style.backgroundColor = "green";
-
-        // Hide the popup
+        updateButtonStyles(savedData);
         document.getElementById("popup").style.display = "none";
-
-        
     });
 
 
@@ -94,10 +130,10 @@ document.addEventListener("DOMContentLoaded", function () {
    
 
     // Handle undo button click
-    document.getElementById("undo-button").addEventListener("click", function () {
+    //document.getElementById("undo-button").addEventListener("click", function () {
         // Implement the logic for undoing the last action
-        undoLastAction();
-    });
+        //undoLastAction();
+    //});
 
     // Function to implement undo functionality
     function undoLastAction() {
@@ -128,16 +164,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Function to update button styles based on saved data
     function updateButtonStyles(savedData) {
-        // Set buttons with data to green, and buttons without data to grey
-        let allButtons = document.querySelectorAll('.day-button'); // Replace 'day-button' with the actual class name of your buttons
-    
-        allButtons.forEach(button => {
-            let day = button.id;
-            if (savedData.hasOwnProperty(day) && Array.isArray(savedData[day]) && savedData[day].length > 0) {
-                // Button has data, set background color to green
+        const yearData = savedData[selectedYear] || {};
+        document.querySelectorAll(".day-button").forEach((button) => {
+            const day = button.id;
+            if (Array.isArray(yearData[day]) && yearData[day].length > 0) {
                 button.style.backgroundColor = "green";
             } else {
-                // Button does not have data, set background color to grey
                 button.style.backgroundColor = "white";
             }
         });
@@ -146,28 +178,14 @@ document.addEventListener("DOMContentLoaded", function () {
      // Function to delete data for a specific day
      function deleteData(selectedDay) {
         let savedData = JSON.parse(localStorage.getItem("savedData")) || {};
-
-        if (Array.isArray(savedData[selectedDay]) && savedData[selectedDay].length > 0) {
+    
+        if (savedData[selectedYear] && Array.isArray(savedData[selectedYear][selectedDay])) {
             // Remove the data for the selected day
-            savedData[selectedDay] = [];
-
+            savedData[selectedYear][selectedDay] = [];
+    
             // Save the updated data to local storage
             localStorage.setItem("savedData", JSON.stringify(savedData));
-            
-            let dayButton = document.getElementById(selectedDay);
-            if (dayButton) {
-                dayButton.classList.remove("green");
-                dayButton.style.backgroundColor = "white"; // Set background color to white
-            } else {
-                console.log("Element not found for ID:", selectedDay);
-            }
-
-
-            // Update button style for the selected day (change back to default color)
-            document.getElementById(selectedDay).classList.remove("green");
-
             updateButtonStyles(savedData);
-            hidePopup();
         }
     }
 
