@@ -37,148 +37,181 @@
         }
     </style>
     <script>
-        let savedData = JSON.parse(localStorage.getItem("savedData")) || {};
-        const monthlyData = organizeDataByMonths(savedData);
-        const sortedMonths = Object.keys(monthlyData).sort((a, b) => {
-        const dateA = new Date(a + "-01");
-        const dateB = new Date(b + "-01");
-        return dateA - dateB;
-        });
-    document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
+            const selectedYear = localStorage.getItem("selectedYear") || "2025"; // Default year
+            console.log("Selected Year:", selectedYear);
+
+            const savedData = JSON.parse(localStorage.getItem("savedData")) || {};
+            console.log("Saved Data:", savedData);
+
+            const yearData = savedData[selectedYear] || {};
+            console.log("Year Data:", yearData);
+
+            const monthlyData = organizeDataByMonths(yearData);
+            console.log("Monthly Data for Selected Year:", monthlyData);
+
+            const sortedMonths = Object.keys(monthlyData).sort((a, b) => {
+                const dateA = new Date(a + "-01");
+                const dateB = new Date(b + "-01");
+                return dateA - dateB;
+            });
     
 
-    const datasets = createDatasets(monthlyData, sortedMonths);
+            const datasets = createDatasets(monthlyData, sortedMonths);
 
-    // Create stacked bar graph
-    createStackedBarGraph(sortedMonths, datasets);
+            // Create stacked bar graph
+            createStackedBarGraph(sortedMonths, datasets);
 
-    displayMonthlyTotals(monthlyData);
-});
+            console.log("Calling displayMonthlyTotals...");
+            console.log("Monthly Data being passed to displayMonthlyTotals:", monthlyData);
+            displayMonthlyTotals(monthlyData);
+        });
 
-function organizeDataByMonths(savedData) {
-    const monthlyData = {};
+        function organizeDataByMonths(yearData) {
+            const monthlyData = {};
+            console.log("OrganizeDataByMonths - Saved Data:", yearData);
 
-    for (let day in savedData) {
-        if (savedData.hasOwnProperty(day)) {
-            const entries = savedData[day];
-            const month = getMonthFromDate(day);
+            for (let day in yearData) {
+                if (yearData.hasOwnProperty(day)) {
+                    const entries = yearData[day];
+                    console.log("Processing day:", day, "Entries:", entries);
+                    const month = getMonthFromDate(day);
+                    console.log("Extracted Month:", month);
 
-            if (!monthlyData[month]) {
-                monthlyData[month] = {
-                    cycling: 0,
-                    treadmill: 0,
-                    weights: 0,
-                    walking: 0,
-                };
+                    if (!monthlyData[month]) {
+                        monthlyData[month] = {
+                            cycling: 0,
+                            treadmill: 0,
+                            weights: 0,
+                            walking: 0,
+                       };
+                   }
+
+                    entries.forEach((entry) => {
+                        console.log("Processing entry:", entry);
+                        if (entry.item === "Cycling") {
+                            monthlyData[month].cycling += parseInt(entry.number, 10);
+                        } else if (entry.item === "Treadmill") {
+                            monthlyData[month].treadmill += parseInt(entry.number, 10);
+                        } else if (entry.item === "Weights") {
+                           monthlyData[month].weights += parseInt(entry.number, 10);
+                        } else if (entry.item === "Walking") {
+                           monthlyData[month].walking += parseInt(entry.number, 10);
+                        }
+                    });
+                }
             }
+            console.log("Final Monthly Data:", monthlyData);
+            return monthlyData;
+        }
 
-            entries.forEach((entry) => {
-                if (entry.item === "Cycling") {
-                    monthlyData[month].cycling += parseInt(entry.number, 10);
-                } else if (entry.item === "Treadmill") {
-                    monthlyData[month].treadmill += parseInt(entry.number, 10);
-                } else if (entry.item === "Weights") {
-                    monthlyData[month].weights += parseInt(entry.number, 10);
-                } else if (entry.item === "Walking") {
-                    monthlyData[month].walking += parseInt(entry.number, 10);
+        function getMonthFromDate(dateString) {
+            const monthAbbreviation = dateString.substring(0, 3); // Extract month abbreviation (e.g., "Jan")
+            const monthMap = {
+                Jan: "January",
+                Feb: "February",
+                Mar: "March",
+                Apr: "April",
+                May: "May",
+                Jun: "June",
+                Jul: "July",
+                Aug: "August",
+                Sep: "September",
+                Oct: "October",
+                Nov: "November",
+                Dec: "December",
+            };
+            return monthMap[monthAbbreviation] || dateString;
+        }
+
+        function createDatasets(monthlyData, sortedMonths) {
+            const cyclingData = [];
+            const treadmillData = [];
+            const weightsData = [];
+            const walkingData =[];
+
+            sortedMonths.forEach((month) => {
+                cyclingData.push(monthlyData[month]?.cycling || 0);
+                treadmillData.push(monthlyData[month]?.treadmill || 0);
+                weightsData.push(monthlyData[month]?.weights || 0);
+                walkingData.push(monthlyData[month]?.walking || 0);
+            });
+
+            return [
+                {
+                    label: 'Cycling',
+                    data: cyclingData,
+                    backgroundColor: 'rgba(75, 140, 255, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Treadmill',
+                    data: treadmillData,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Weights',
+                    data: weightsData,
+                    backgroundColor: 'rgba(111, 255, 95, 0.2)',
+                    borderColor: 'rgba(147, 200, 78, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Walking',
+                    data: walkingData,
+                    backgroundColor: 'rgba(240,230,140, 0.2)',
+                    borderColor: 'rgba(147, 200, 78, 1)',
+                    borderWidth: 1
+                }
+            ];
+        }
+
+        console.log("Monthly Data:", monthlyData);
+
+        function createStackedBarGraph(labels, datasets) {
+            const ctx = document.createElement("canvas").getContext("2d");
+
+            // Create a stacked bar chart
+            const myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: datasets
+                },
+                options: {
+                    scales: {
+                        x: { stacked: true },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    const hours = Math.floor(value / 60);
+                                    const minutes = Math.round(value % 60);
+                                    return `${hours}h ${minutes}m`;
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const hours = Math.floor(context.raw / 60);
+                                    const minutes = Math.round(context.raw % 60);
+                                    return `Total Hours: ${hours}h ${minutes}m`;
+                                }
+                            }
+                        }
+                    },
                 }
             });
+            document.body.appendChild(ctx.canvas);
         }
-    }
 
-    return monthlyData;
-}
-
-function getMonthFromDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', { month: 'long' });
-}
-
-function createDatasets(monthlyData, sortedMonths) {
-    const cyclingData = [];
-    const treadmillData = [];
-    const weightsData = [];
-    const walkingData =[];
-
-    sortedMonths.forEach((month) => {
-        cyclingData.push(monthlyData[month].cycling);
-        treadmillData.push(monthlyData[month].treadmill);
-        weightsData.push(monthlyData[month].weights);
-        walkingData.push(monthlyData[month].walking);
-    });
-
-    return [
-        {
-            label: 'Cycling',
-            data: cyclingData,
-            backgroundColor: 'rgba(75, 140, 255, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1
-        },
-        {
-            label: 'Treadmill',
-            data: treadmillData,
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1
-        },
-        {
-            label: 'Weights',
-            data: weightsData,
-            backgroundColor: 'rgba(111, 255, 95, 0.2)',
-            borderColor: 'rgba(147, 200, 78, 1)',
-            borderWidth: 1
-        },
-        {
-            label: 'Walking',
-            data: walkingData,
-            backgroundColor: 'rgba(240,230,140, 0.2)',
-            borderColor: 'rgba(147, 200, 78, 1)',
-            borderWidth: 1
-        }
-    ];
-}
-
-function createStackedBarGraph(labels, datasets) {
-    const ctx = document.createElement("canvas").getContext("2d");
-
-    // Create a stacked bar chart
-    const myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: datasets
-        },
-        options: {
-            scales: {
-                x: { stacked: true },
-                y: {
-                    stacked: true,
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function (value) {
-                            const hours = Math.floor(value / 60);
-                            const minutes = Math.round(value % 60);
-                            return `${hours}h ${minutes}m`;
-                        }
-                    }
-                }
-            },
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            const hours = Math.floor(context.raw / 60);
-                            const minutes = Math.round(context.raw % 60);
-                            return `Total Hours: ${hours}h ${minutes}m`;
-                        }
-                    }
-                }
-            },
-        }
-    });
-    document.body.appendChild(ctx.canvas);
-}
         function displayMonthlyTotals(monthlyData) {
             const tableContainer = document.createElement("div");
             tableContainer.className = "table-container";
@@ -206,16 +239,17 @@ function createStackedBarGraph(labels, datasets) {
 
             // Create table rows with monthly combined totals
             for (const month of sortedMonths) {
+                console.log(`Combined totals for ${month}:`, monthlyData[month]);
                 const row = document.createElement("tr");
                 const monthCell = document.createElement("td");
                 monthCell.textContent = month;
                 row.appendChild(monthCell);
 
                 const combinedTotalCell = document.createElement("td");
-                const totalCycling = monthlyData[month].cycling;
-                const totalTreadmill = monthlyData[month].treadmill;
-                const totalWeights = monthlyData[month].weights;
-                const totalWalking = monthlyData[month].walking;
+                const totalCycling = monthlyData[month]?.cycling || 0;
+                const totalTreadmill = monthlyData[month]?.treadmill || 0;
+                const totalWeights = monthlyData[month]?.weights || 0;
+                const totalWalking = monthlyData[month]?.walking || 0;
                 const combinedTotalMinutes = totalCycling + totalTreadmill + totalWeights + totalWalking;
 
                 const hours = Math.floor(combinedTotalMinutes / 60);
