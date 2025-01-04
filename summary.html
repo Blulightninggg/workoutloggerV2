@@ -37,62 +37,68 @@
     
     </div>
     <script>
+    
+    // Define selectedYear globally or retrieve it from localStorage
+    let selectedYear = localStorage.getItem("selectedYear") || "2025";
+
     // Function to display the summary on the Summary page
     function displaySummary() {
-    console.log("Displaying Summary");
-    const summaryContainer = document.getElementById("summary-container");
-    console.log("Summary Container:", summaryContainer);
-    if (!summaryContainer) {
-        console.error("Error: Could not find 'summary-container' element.");
-        return; // Exit the function if the container is not found
-    }
-    summaryContainer.innerHTML = ""; // Clear previous content
+        console.log("Displaying Summary...");
 
-    const savedData = JSON.parse(localStorage.getItem("savedData")) || {};
-    const table = document.createElement("table");
-    const tableHeader = document.createElement("thead");
-    tableHeader.innerHTML = `
-        <tr>
-            <th>Date</th>
-            <th>Type of Activity</th>
-            <th>Duration (minutes)</th>
-        </tr>
-    `;
-    table.appendChild(tableHeader);
+        const savedData = JSON.parse(localStorage.getItem("savedData")) || {};
+        console.log("Retrieved savedData:", savedData);
 
-    const tableBody = document.createElement("tbody");
-    let totalDuration = 0; // Initialize a variable to store the total duration
+        const summaryContainer = document.getElementById("summary-container");
+        if (!summaryContainer) {
+            console.error("Summary container not found!");
+            return;
+        }
+        summaryContainer.innerHTML = "";
 
-   // Get sorted dates
-   const sortedDates = Object.keys(savedData).sort((a, b) => {
-        const dateA = new Date(`2000 ${a}`);
-        const dateB = new Date(`2000 ${b}`);
-        return dateA - dateB;
-    });
+        const yearData = savedData[selectedYear] || {};
+        console.log("Data for selectedYear:", selectedYear, yearData);
 
-    sortedDates.forEach((day) => {
-        const entries = savedData[day];
-        entries.forEach((entry) => {
-            const row = document.createElement("tr");
-            const duration = parseInt(entry.number, 10);
-            totalDuration += duration;
-            row.innerHTML = `
-                <td style="text-align: center;">${day}</td>
-                <td style="text-align: center;">${entry.item}</td>
-                <td style="text-align: center;">${duration}</td>
-            `;
-            tableBody.appendChild(row);
+        const table = document.createElement("table");
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type of Activity</th>
+                    <th>Duration (minutes)</th>
+                </tr>
+            </thead>
+        `;
+
+        const tableBody = document.createElement("tbody");
+        let totalDuration = 0;
+
+        Object.keys(yearData).forEach((day) => {
+            const entries = yearData[day];
+            console.log("Entries for day:", day, entries);
+            if (Array.isArray(entries)) {   
+                entries.forEach((entry) => {
+                   const row = document.createElement("tr");
+                   totalDuration += parseInt(entry.number, 10) || 0;
+                   row.innerHTML = `
+                       <td>${day}</td>
+                       <td>${entry.item}</td>
+                       <td>${entry.number}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
         });
-    });
-    table.appendChild(tableBody);
 
-    summaryContainer.appendChild(table);
+        table.appendChild(tableBody);
+        summaryContainer.appendChild(table);
+
+        console.log("Summary table created successfully.");
     }
     
     document.addEventListener("DOMContentLoaded", function () {
         if (window.location.pathname.endsWith("summary.html")) {
+            console.log("Summary page loaded.");
             displaySummary();
-            displayAdditionalSummary();
         }
     });
     </script>
