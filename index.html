@@ -349,25 +349,21 @@
             text-decoration: none;
             font-size: 30px;
         }
-        .floating-bar {
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: lightgray;
-            border-radius: 10px;
-            padding: 10px;
+        
+        #yearSelectorBar {
             display: flex;
+            justify-content: center;
             gap: 10px;
-            z-index: 1000;
+            margin-top: 10px;
         }
 
         .yearOption {
             padding: 10px 20px;
-            border: none;
+            border: 2px solid #0056b3;
+            outline: 2px solid #007bff;
             border-radius: 5px;
             cursor: pointer;
-            background-color: white;
+            background-color: #007bff;
             color: black;
             transition: background-color 0.3s, color 0.3s;
         }
@@ -855,7 +851,7 @@
         <a href="graph.html">Graph</a>
     </div>
 
-    <div id="yearSelectorBar" class="floating-bar">
+    <div id="yearSelectorBar">
         <button class="yearOption selected" data-year="2024">2024</button>
         <button class="yearOption" data-year="2025">2025</button>
         <button class="yearOption" data-year="2026">2026</button>
