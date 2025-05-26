@@ -84,6 +84,7 @@
                             treadmill: 0,
                             weights: 0,
                             walking: 0,
+                            pickleball: 0,
                        };
                    }
 
@@ -97,6 +98,8 @@
                            monthlyData[month].weights += parseInt(entry.number, 10);
                         } else if (entry.item === "Walking") {
                            monthlyData[month].walking += parseInt(entry.number, 10);
+                        } else if (entry.item === "Pickleball") {
+                            monthlyData[month].pickleball += parseInt(entry.number, 10);
                         }
                     });
                 }
@@ -129,12 +132,14 @@
             const treadmillData = [];
             const weightsData = [];
             const walkingData =[];
+            const pickleballData =[];
 
             sortedMonths.forEach((month) => {
                 cyclingData.push(monthlyData[month]?.cycling || 0);
                 treadmillData.push(monthlyData[month]?.treadmill || 0);
                 weightsData.push(monthlyData[month]?.weights || 0);
                 walkingData.push(monthlyData[month]?.walking || 0);
+                pickleballData.push(monthlyData[month]?.pickleball || 0);
             });
 
             return [
@@ -164,6 +169,13 @@
                     data: walkingData,
                     backgroundColor: 'rgba(240,230,140, 0.2)',
                     borderColor: 'rgba(147, 200, 78, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Pickleball',
+                    data: pickleballData,
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
                     borderWidth: 1
                 }
             ];
@@ -250,7 +262,8 @@
                 const totalTreadmill = monthlyData[month]?.treadmill || 0;
                 const totalWeights = monthlyData[month]?.weights || 0;
                 const totalWalking = monthlyData[month]?.walking || 0;
-                const combinedTotalMinutes = totalCycling + totalTreadmill + totalWeights + totalWalking;
+                const totalPickleball = monthlyData[month]?.pickleball || 0;
+                const combinedTotalMinutes = totalCycling + totalTreadmill + totalWeights + totalWalking + totalPickleball;
 
                 const hours = Math.floor(combinedTotalMinutes / 60);
                 const minutes = Math.round(combinedTotalMinutes % 60);
